@@ -101,4 +101,15 @@ router.get('/closeBrowser', function (req, res, next) {
   })
 })
 
+router.get('/reboot', function (req, res, next) {
+  exec(`reboot now`, (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+      res.json(error.message);
+    }
+    res.json(true);
+  })
+})
+
+
 module.exports = router;
