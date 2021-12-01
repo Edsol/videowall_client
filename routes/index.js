@@ -3,7 +3,6 @@ var router = express.Router();
 const { exec } = require("child_process");
 const os = require('os');
 const fs = require('fs');
-const { stdout } = require('process');
 
 // var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
 // 
