@@ -2,7 +2,8 @@
 #!/bin/bash
 sudo apt-get install --no-install-recommends xserver-xorg x11-xserver-utils openbox lightdm unclutter -y
 sudo apt-get install chromium-browser vsftpd scrot openssl shellinabox -y
-sudo apt install lightdm
+sudo apt install lightdm osd_cat 
+# libnotify-bin
 
 mkdir -p /home/pi/FTP/files
 chmod a-w /home/pi/FTP

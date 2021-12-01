@@ -3,6 +3,7 @@ var router = express.Router();
 const { exec } = require("child_process");
 const os = require('os');
 const fs = require('fs');
+const { stdout } = require('process');
 
 // var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
 // 
@@ -41,7 +42,7 @@ router.put('/hostname', function (req, res, next) {
   if (req.body.hostname === '') {
     res.json(false);
   } else {
-    exec(`hostnamectl set-hostname ` + req.body.hostname, (error, stdout, stderr) => {
+    exec(`sudo hostnamectl set-hostname ` + req.body.hostname, (error, stdout, stderr) => {
       if (error) {
         res.json({ executed: false, errors: error.message });
       }
@@ -77,10 +78,15 @@ router.get('/screenshot/:base64', function (req, res, next) {
       console.log(`error: ${error.message}`);
       res.json(error.message);
     }
-    if (req.params.base64) {
+
+    var format = JSON.parse(req.params.base64);
+    if (format === true) {
+      console.log(format, 'upload image in base64 format')
       var base64 = fs.readFileSync(file_path).toString('base64');
       res.json(base64)
     } else {
+      console.log(format, 'upload image in binary format')
+      // res.sendFile(file_path);
       res.download(file_path);
     }
   });
@@ -102,13 +108,28 @@ router.get('/closeBrowser', function (req, res, next) {
 })
 
 router.get('/reboot', function (req, res, next) {
-  exec(`reboot now`, (error, stdout, stderr) => {
+  exec(`sudo reboot now`, (error, stdout, stderr) => {
     if (error) {
       console.log(`error: ${error.message}`);
       res.json(error.message);
     }
     res.json(true);
   })
+})
+
+router.get('/osd/:text', function (req, res, next) {
+  var text = req.params.text;
+  exec(`export DISPLAY=":0"`, (error, stdout, stderr) => {
+    console.log(stdout)
+    exec(`DISPLAY=:0 echo ${text} | osd_cat -p top -A right -f -*-*-bold-*-*-*-150-60-*-*-*-*-*-* -d 3 -s 3`, (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        res.json(error.message);
+      }
+      res.json(true);
+    })
+  });
+
 })
 
 
