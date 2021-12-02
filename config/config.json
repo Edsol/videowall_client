@@ -1,0 +1,9 @@
+{
+    "hostname":null,
+    "displayNumber":0,
+    "serverAddress":null,
+    "statusNotifier":{
+        "enable":false,
+        "timing":300
+    }
+}
