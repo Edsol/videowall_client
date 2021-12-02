@@ -42,16 +42,22 @@ app.use(function (err, req, res, next) {
 var configController = require('./controllers/config');
 var index_controller = require('./controllers/index');
 
+global.config = configController.getConfig();
+
 //if no hostname has been set, sets it in the configuration
-if (!global.config.hostname) {
+if (global.config.hostname === undefined) {
   index_controller.getDeviceHostname((hostname) => {
     configController.save('hostname', hostname)
   });
 }
 
-//if no ip address has been set, sets it in the configuration
-if (!global.config.ip || global.config.ip === '') {
+// //if no ip address has been set, sets it in the configuration
+if (global.config.ip === undefined) {
   configController.save('ip', index_controller.getIpAddress())
+}
+
+if (global.config.mac === undefined) {
+  configController.save('mac', index_controller.getMacAddress())
 }
 
 global.config = configController.getConfig();

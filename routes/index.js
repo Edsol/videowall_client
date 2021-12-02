@@ -7,6 +7,7 @@ router.get('/', index_controller.index);
 router.get('/status', index_controller.status)
 router.get('/hostname', index_controller.getHostname)
 router.get('/setHostname/:hostname', index_controller.setHostname)
+router.get('/mac', index_controller.getMacAddress)
 router.post('/run', index_controller.openBrowser);
 router.get('/closeBrowser', index_controller.closeBrowser)
 router.get('/screenshot/:base64', index_controller.getScreenshot)

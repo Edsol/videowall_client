@@ -1,7 +1,7 @@
 const { exec } = require("child_process");
-const os = require('os');
 const fs = require('fs');
 const ip = require('ip');
+const getmac = require('getmac');
 const configController = require('../controllers/config');
 
 global.config = configController.getConfig;
@@ -48,6 +48,11 @@ exports.getDeviceHostname = (callback) => {
 
 exports.getIpAddress = () => {
     return ip.address();
+}
+
+exports.getMacAddress = () => {
+    // cat /sys/class/net/eth0/address
+    return getmac.default();
 }
 
 exports.getConfig = async (req, res) => {

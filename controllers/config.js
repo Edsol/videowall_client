@@ -8,10 +8,10 @@ if (fs.existsSync(jsonFilePath) === false) {
     fs.copyFileSync(jsonDefaultFilePath, jsonFilePath)
 }
 
-const configStorage = new Store(jsonFilePath);
+const configStorage = exports.configStorage = new Store(jsonFilePath);
 
 exports.config = configStorage.allSync();
-console.log('exports.config', exports.config)
+
 exports.getConfig = () => {
     global.config = configStorage.allSync();
     return configStorage.allSync();
