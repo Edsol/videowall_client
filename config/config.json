@@ -1,1 +1,1 @@
-{"displayNumber":0,"serverAddress":null,"statusNotifier":{"enable":false,"timing":300},"chromiumParams":"--display=:0 --kiosk --incognito --disable-inforbars --window-position=0,0","hostname":"debian-edoardo\n","ip":"192.168.1.188"}
+{"displayNumber":0,"statusNotifier":{"enable":false,"timing":300},"chromiumParams":"--display=:0 --kiosk --incognito --disable-inforbars --window-position=0,0","hostname":"debian-edoardo\n","ip":"192.168.1.188","serverAddress":"192.168.1.189"}

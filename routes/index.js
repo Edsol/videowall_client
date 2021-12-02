@@ -14,4 +14,6 @@ router.get('/reboot', index_controller.rebootDevice)
 router.get('/osd/:text', index_controller.setOsd)
 router.get('/getConfig', index_controller.getConfig)
 router.post('/setConfig', index_controller.setConfig)
+router.post('/runCommand', index_controller.runCommand)
+
 module.exports = router;

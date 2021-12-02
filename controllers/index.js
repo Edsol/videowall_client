@@ -54,7 +54,24 @@ exports.getConfig = (req, res) => {
 }
 
 exports.setConfig = (req, res) => {
-    res.json('NOT IMPLEMENTED')
+    for (const [key, value] of Object.entries(req.body)) {
+        global.configStorage.delete(key)
+        global.configStorage.saveSync(key, value)
+    }
+    res.json(true)
+}
+
+exports.runCommand = (req, res) => {
+    if (req.body.command === '') {
+        return false;
+    }
+
+    exec(req.body.command, (error, stdout, stderr) => {
+        if (error) {
+            return error.message;
+        }
+        return stdout
+    })
 }
 
 /**
