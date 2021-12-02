@@ -39,22 +39,21 @@ app.use(function (err, req, res, next) {
 });
 
 //CUSTOM 
-var Store = require("jfs");
+var configController = require('./controllers/config');
 var index_controller = require('./controllers/index');
-
-global.configStorage = new Store('./config/config.json');
-global.config = global.configStorage.allSync();
 
 //if no hostname has been set, sets it in the configuration
 if (!global.config.hostname) {
   index_controller.getDeviceHostname((hostname) => {
-    global.configStorage.save('hostname', hostname)
+    configController.save('hostname', hostname)
   });
 }
 
 //if no ip address has been set, sets it in the configuration
 if (!global.config.ip || global.config.ip === '') {
-  global.configStorage.save('ip', index_controller.getIpAddress())
+  configController.save('ip', index_controller.getIpAddress())
 }
+
+global.config = configController.getConfig();
 
 module.exports = app;

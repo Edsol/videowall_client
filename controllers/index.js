@@ -2,7 +2,9 @@ const { exec } = require("child_process");
 const os = require('os');
 const fs = require('fs');
 const ip = require('ip');
+const configController = require('../controllers/config');
 
+global.config = configController.getConfig;
 // var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
 // 
 // Doppia finestra
@@ -12,10 +14,9 @@ const ip = require('ip');
 // chromium-browser --new-window --start-fullscreen  --user-data-dir=Default --display=:0 --window-position=0,0 --window-size=1920,1080 --kiosk tp://google.com
 
 exports.index = async (req, res) => {
-    console.log(global.config)
     res.render('index', {
-        title: 'PiClient: ' + (global.config.hostname || '-----'),
-        hostname: global.config.hostname
+        title: 'PiClient: ' + (config.hostname || '-----'),
+        hostname: config.hostname
     });
 }
 
@@ -30,10 +31,10 @@ exports.status = async (req, res) => {
  * GET hostname of device
  */
 exports.getHostname = async (req, res) => {
-    if (!global.config.hostname) {
-        global.configStorage.save('hostname', os.hostname());
-    }
-    res.json(global.config.hostname)
+    // if (!global.config.hostname) {
+    //     global.configStorage.saveSync('hostname', os.hostname());
+    // }
+    res.json(config.hostname)
 }
 
 exports.getDeviceHostname = (callback) => {
@@ -49,14 +50,13 @@ exports.getIpAddress = () => {
     return ip.address();
 }
 
-exports.getConfig = (req, res) => {
-    res.json(global.config)
+exports.getConfig = async (req, res) => {
+    res.json(configController.getConfig())
 }
 
 exports.setConfig = (req, res) => {
     for (const [key, value] of Object.entries(req.body)) {
-        global.configStorage.delete(key)
-        global.configStorage.saveSync(key, value)
+        configController.replace(key, value)
     }
     res.json(true)
 }
@@ -83,16 +83,15 @@ exports.setHostname = async (req, res) => {
         res.json(false);
     }
 
-    global.configStorage.delete('hostname');
-    global.configStorage.save('hostname', hostname)
+    configController.replace('hostname', hostname)
 
     var response = { executed: true, errors: null };
-    exec(`sudo hostnamectl set-hostname ` + hostname, (error, stdout, stderr) => {
-        if (error) {
-            response.executed = false;
-            response.errors = error.message;
-        }
-    });
+    // exec(`sudo hostnamectl set-hostname ` + hostname, (error, stdout, stderr) => {
+    //     if (error) {
+    //         response.executed = false;
+    //         response.errors = error.message;
+    //     }
+    // });
     res.json(response);
 }
 
@@ -101,7 +100,7 @@ exports.openBrowser = async (req, res, next) => {
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
     } else {
-        exec(`unclutter & chromium-browser ${url} ${global.config.chromiumParams} &`, (error, stdout, stderr) => {
+        exec(`unclutter & chromium-browser ${url} ${config.chromiumParams} &`, (error, stdout, stderr) => {
             if (error) {
                 res.json({ executed: false, errors: error.message });
             }

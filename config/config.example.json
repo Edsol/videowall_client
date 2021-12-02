@@ -1,0 +1,8 @@
+{
+  "displayNumber": 0,
+  "statusNotifier": {
+    "enable": false,
+    "timing": 300
+  },
+  "chromiumParams": "--display=:0 --kiosk --incognito --disable-inforbars --window-position=0,0"
+}
