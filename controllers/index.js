@@ -13,6 +13,7 @@ const fs = require('fs');
 var chromium_params = "--display=:0 --kiosk --incognito --disable-inforbars --window-position=0,0";
 
 exports.index = async (req, res) => {
+    console.log(global.config)
     res.render('index', { title: 'Express' });
 }
 
