@@ -21,8 +21,17 @@
 </head>
 
 <body>
-  <input type="text" name="url" id="url" placeholder='example.com'>
-  <button id='send' class='btn btn-sm btn-primary'>Visualizza</button>
+  <div class="">
+    <input type="text" name="url" id="url" placeholder='example.com'>
+    <button id='send' class='btn btn-sm btn-primary'>Load</button>
+  </div>
+
+  <hr>
+
+  <div class="">
+    <input type="text" name="hostname" id="hostname" placeholder='hostname' value='<%- hostname %>' >
+    <button id='send' class='btn btn-sm btn-primary setHostname'>Set</button>
+  </div>
 
   <script>
     $("#url").on("keypress", function (event) {
@@ -44,6 +53,21 @@
           }
 
         })
+    })
+
+    $('.setHostname').on('click',event =>{
+      var hostname = $('#hostname').val();
+      if(hostname === ''){
+        console.log('no hostname');
+        return;
+      }
+      axios.get('/setHostname/'+hostname)
+      .then((response) =>{
+        console.log(response.data)
+        if(response.data){
+          console.log('executed')
+        }
+      })
     })
   </script>
 </body>

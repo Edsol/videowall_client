@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const os = require('os');
 const fs = require('fs');
+const ip = require('ip');
 
 // var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
 // 
@@ -10,11 +11,12 @@ const fs = require('fs');
 
 // chromium-browser --new-window --start-fullscreen  --user-data-dir=Default --display=:0 --window-position=0,0 --window-size=1920,1080 --kiosk tp://google.com
 
-var chromium_params = "--display=:0 --kiosk --incognito --disable-inforbars --window-position=0,0";
-
 exports.index = async (req, res) => {
     console.log(global.config)
-    res.render('index', { title: 'Express' });
+    res.render('index', {
+        title: 'PiClient: ' + (global.config.hostname || '-----'),
+        hostname: global.config.hostname
+    });
 }
 
 /**
@@ -28,23 +30,53 @@ exports.status = async (req, res) => {
  * GET hostname of device
  */
 exports.getHostname = async (req, res) => {
-    res.json(os.hostname());
+    if (!global.config.hostname) {
+        global.configStorage.save('hostname', os.hostname());
+    }
+    res.json(global.config.hostname)
+}
+
+exports.getDeviceHostname = (callback) => {
+    exec("cat /proc/sys/kernel/hostname", (error, stdout, stderr) => {
+        if (error) {
+            return error.message;
+        }
+        callback(stdout)
+    })
+}
+
+exports.getIpAddress = () => {
+    return ip.address();
+}
+
+exports.getConfig = (req, res) => {
+    res.json(global.config)
+}
+
+exports.setConfig = (req, res) => {
+    res.json('NOT IMPLEMENTED')
 }
 
 /**
  * SET hostname of device
  */
 exports.setHostname = async (req, res) => {
-    if (req.body.hostname === '') {
+    var hostname = req.params.hostname;
+    if (req.params.hostname === '') {
         res.json(false);
-    } else {
-        exec(`sudo hostnamectl set-hostname ` + req.body.hostname, (error, stdout, stderr) => {
-            if (error) {
-                res.json({ executed: false, errors: error.message });
-            }
-            res.json({ executed: true, errors: null });
-        });
     }
+
+    global.configStorage.delete('hostname');
+    global.configStorage.save('hostname', hostname)
+
+    var response = { executed: true, errors: null };
+    exec(`sudo hostnamectl set-hostname ` + hostname, (error, stdout, stderr) => {
+        if (error) {
+            response.executed = false;
+            response.errors = error.message;
+        }
+    });
+    res.json(response);
 }
 
 exports.openBrowser = async (req, res, next) => {
@@ -52,7 +84,7 @@ exports.openBrowser = async (req, res, next) => {
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
     } else {
-        exec(`unclutter & chromium-browser ${url} ${chromium_params} &`, (error, stdout, stderr) => {
+        exec(`unclutter & chromium-browser ${url} ${global.config.chromiumParams} &`, (error, stdout, stderr) => {
             if (error) {
                 res.json({ executed: false, errors: error.message });
             }
