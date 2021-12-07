@@ -111,6 +111,7 @@ exports.openBrowser = async (req, res, next) => {
             }
             res.json({ executed: true, errors: null });
         });
+        configController.save('lastUrl', url);
         res.json({ executed: true, errors: null });
     }
 }

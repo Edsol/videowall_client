@@ -30,11 +30,11 @@ touch ecosystem.config.js
 echo 'module.exports = {
   apps : [{
     name   : "pi_client",
-    script : ".pi_client/bin/www"
+    script : "pi_client/bin/www"
   }]
-}' >> ecosystem.config.js
+}' >> ../ecosystem.config.js
 
-pm2 start ecosystem.config.js
+pm2 start ../ecosystem.config.js
 
 #edit ecosystem.config.js
 sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pi --hp /home/pi
