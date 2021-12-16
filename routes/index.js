@@ -17,4 +17,8 @@ router.get('/getConfig', index_controller.getConfig)
 router.post('/setConfig', index_controller.setConfig)
 router.post('/runCommand', index_controller.runCommand)
 
+router.get('/getMonitors', index_controller.getMonitors)
+router.get('/getMonitors/:noParse', index_controller.getMonitors)
+router.get('/setPrimaryMonitor/:id', index_controller.setPrimaryMonitor)
+
 module.exports = router;

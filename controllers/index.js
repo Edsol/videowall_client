@@ -4,6 +4,8 @@ const ip = require('ip');
 const getmac = require('getmac');
 const configController = require('../controllers/config');
 
+const tools = require('./components/tools');
+
 global.config = configController.getConfig;
 // var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
 // 
@@ -12,6 +14,7 @@ global.config = configController.getConfig;
 // chromium-browser --new-window --start-fullscreen --window-position=1920,0 --user-data-dir=Default --start-fullscreen --display=:0 http://google.com
 
 // chromium-browser --new-window --start-fullscreen  --user-data-dir=Default --display=:0 --window-position=0,0 --window-size=1920,1080 --kiosk tp://google.com
+
 
 exports.index = async (req, res) => {
     res.render('index', {
@@ -66,16 +69,21 @@ exports.setConfig = (req, res) => {
     res.json(true)
 }
 
-exports.runCommand = (req, res) => {
-    if (req.body.command === '') {
+exports.runCommand = async (req, res) => {
+    var command = req.body.command;
+    console.log(`Command '${command}' received`)
+
+    if (command === '') {
         return false;
     }
 
-    exec(req.body.command, (error, stdout, stderr) => {
+    exec(command, async (error, stdout, stderr) => {
+
         if (error) {
             return error.message;
         }
-        return stdout
+
+        res.json(stdout)
     })
 }
 
@@ -102,10 +110,12 @@ exports.setHostname = async (req, res) => {
 
 exports.openBrowser = async (req, res, next) => {
     var url = req.body.url;
+
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
     } else {
-        exec(`unclutter & chromium-browser ${url} ${config.chromiumParams} &`, (error, stdout, stderr) => {
+        browserCommand = config.chromiumCommand || 'chromium-browser';
+        exec(`unclutter & ${browserCommand} ${url} ${config.chromiumParams} &`, (error, stdout, stderr) => {
             if (error) {
                 res.json({ executed: false, errors: error.message });
             }
@@ -173,4 +183,14 @@ exports.setOsd = async (req, res) => {
             res.json(true);
         })
     });
+}
+
+exports.getMonitors = async (req, res) => {
+    var noParse = req.params.noParse === undefined ? false : JSON.parse(req.params.noParse);
+    var listMonitors = await tools.listMonitors(noParse);
+    res.json(listMonitors);
+}
+
+exports.setPrimaryMonitor = async (req, res) => {
+    res.json(await tools.setPrimaryMonitor(req.params.id));
 }
