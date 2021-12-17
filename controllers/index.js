@@ -132,7 +132,7 @@ exports.openUrl = async (req, res, next) => {
 
     });
 
-    console.log('execResponse', execResponse)
+    console.log('execResponse', execResponse.pid)
     configController.save('lastUrl', url);
     res.json({ executed: true, errors: null });
 }
