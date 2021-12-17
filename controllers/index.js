@@ -128,13 +128,13 @@ exports.openUrl = async (req, res, next) => {
         if (error) {
             res.json({ executed: false, errors: error.message });
         }
-        exec('echo $!', (error, stdout) => {
-            res.json({ executed: true, errors: null, pid: stdout });
-        })
+
 
     });
     configController.save('lastUrl', url);
-    res.json({ executed: true, errors: null });
+    exec('echo $!', (error, stdout) => {
+        res.json({ executed: true, errors: null, pid: stdout });
+    })
 }
 
 exports.closeBrowser = async (req, res) => {
