@@ -110,22 +110,28 @@ exports.setHostname = async (req, res) => {
     res.json(response);
 }
 
-exports.openBrowser = async (req, res, next) => {
+exports.openUrl = async (req, res, next) => {
     var url = req.body.url;
+    var displayId = req.body.display;
 
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
-    } else {
-        browserCommand = config.chromiumCommand || 'chromium-browser';
-        exec(`unclutter & ${browserCommand} ${url} ${config.chromiumParams} &`, (error, stdout, stderr) => {
-            if (error) {
-                res.json({ executed: false, errors: error.message });
-            }
-            res.json({ executed: true, errors: null });
-        });
-        configController.save('lastUrl', url);
-        res.json({ executed: true, errors: null });
     }
+    browserCommand = config.chromiumCommand || 'chromium-browser';
+    console.log('displayId', displayId)
+    var displayObj = await display.get(displayId);
+    console.log('displayData', displayObj)
+    var command = `unclutter & ${browserCommand} ${url} ${config.chromiumParams} --window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition} &`;
+
+    console.log('openUrl command', command)
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            res.json({ executed: false, errors: error.message });
+        }
+        res.json({ executed: true, errors: null });
+    });
+    configController.save('lastUrl', url);
+    res.json({ executed: true, errors: null });
 }
 
 exports.closeBrowser = async (req, res) => {
@@ -144,22 +150,28 @@ exports.closeBrowser = async (req, res) => {
 
 exports.getScreenshot = async (req, res) => {
     file_path = __basedir + '/tmp/screenshot.png';
+    console.log('scrot command:', `scrot ${file_path} -o --display=:0`, file_path)
     exec(`scrot ${file_path} -o --display=:0`, (error, stdout, stderr) => {
+        console.log('inside scrot exec')
         if (error) {
             console.log(`error: ${error.message}`);
             res.json(error.message);
         }
 
-        var format = JSON.parse(req.params.base64);
-        if (format === true) {
-            console.log(format, 'upload image in base64 format')
-            var base64 = fs.readFileSync(file_path).toString('base64');
-            res.json(base64)
-        } else {
-            console.log(format, 'upload image in binary format')
-            // res.sendFile(file_path);
-            res.download(file_path);
-        }
+        console.log('upload image in base64 format')
+        var base64 = fs.readFileSync(file_path).toString('base64');
+        res.json(base64)
+
+        // var format = JSON.parse(req.params.base64);
+        // if (format === true) {
+        //     console.log(format, 'upload image in base64 format')
+        //     var base64 = fs.readFileSync(file_path).toString('base64');
+        //     res.json(base64)
+        // } else {
+        //     console.log(format, 'upload image in binary format')
+        //     // res.sendFile(file_path);
+        //     res.download(file_path);
+        // }
     });
 }
 
@@ -189,6 +201,10 @@ exports.setOsd = async (req, res) => {
 
 exports.storeMonitorsInfo = async (req, res) => {
     res.json(await display.storeInfo());
+}
+
+exports.deleteStoredMonitorsInfo = async (req, res) => {
+    res.json(await display.deleteAll({}));
 }
 
 exports.getMonitors = async (req, res) => {

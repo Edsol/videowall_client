@@ -37,9 +37,8 @@ class Table {
     }
 
     async deleteAll(where = {}, dataSet = {}) {
-        return await prisma[this.tableName].updateMany({
+        return await prisma[this.tableName].deleteMany({
             where: where,
-            data: dataSet
         })
     }
 }

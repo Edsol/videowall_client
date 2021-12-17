@@ -27,11 +27,15 @@ class Display extends Table {
 			var monitor_info = monitors[port];
 
 			if (monitor_info.connected) {
+				var primary = monitor_info.index === 0 ? true : false;
+
 				var monitor_data = {
 					port: port,
-					primary: monitor_info.index === 0 ? true : false,
+					primary: primary,
 					width: monitor_info.width || 0,
-					height: monitor_info.height || 0
+					height: monitor_info.height || 0,
+					xZeroPosition: primary ? 0 : monitor_info.width,
+					yZeroPosition: 0
 				};
 
 				result[monitor_info.index] = monitor_data;
@@ -54,6 +58,22 @@ class Display extends Table {
 			}
 		}
 		return true;
+	}
+
+	async getWidth(displayId) {
+		if (await this.exists({ id: displayId }) === false) {
+			return 0;
+		}
+		var display = await this.get(displayId)
+		return display.width;
+	}
+
+	async getheight(displayId) {
+		if (await this.exists({ id: displayId }) === false) {
+			return 0;
+		}
+		var display = await this.get(displayId)
+		return display.height;
 	}
 
 	/**

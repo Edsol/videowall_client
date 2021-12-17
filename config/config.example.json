@@ -4,5 +4,5 @@
     "timing": 300
   },
   "chromiumCommand": "chromium",
-  "chromiumParams": "--display=:0 --kiosk --incognito --disable-inforbars --window-position=0,0"
+  "chromiumParams": "--display=:0 --kiosk --disable-inforbars"
 }
