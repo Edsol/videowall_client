@@ -124,7 +124,7 @@ exports.openUrl = async (req, res, next) => {
     var command = `unclutter & ${browserCommand} ${url} ${config.chromiumParams} --window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition} &`;
 
     console.log('openUrl command', command)
-    var execResponse = exec(command, (error, stdout, stderr) => {
+    var execResponse = execSync(command, (error, stdout, stderr) => {
         if (error) {
             res.json({ executed: false, errors: error.message });
         }
