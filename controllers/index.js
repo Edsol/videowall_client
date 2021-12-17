@@ -4,7 +4,9 @@ const ip = require('ip');
 const getmac = require('getmac');
 const configController = require('../controllers/config');
 
-const tools = require('./components/tools');
+const displayModel = require('../models/display');
+const display = new displayModel();
+const tools = require('../helper/tools');
 
 global.config = configController.getConfig;
 // var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
@@ -185,12 +187,37 @@ exports.setOsd = async (req, res) => {
     });
 }
 
+exports.storeMonitorsInfo = async (req, res) => {
+    res.json(await display.storeInfo());
+}
+
 exports.getMonitors = async (req, res) => {
-    var noParse = req.params.noParse === undefined ? false : JSON.parse(req.params.noParse);
-    var listMonitors = await tools.listMonitors(noParse);
+    var listMonitors = await display.getList();
     res.json(listMonitors);
 }
 
 exports.setPrimaryMonitor = async (req, res) => {
-    res.json(await tools.setPrimaryMonitor(req.params.id));
+    var id = parseInt(req.params.id);
+    if (await display.exists({ id: id }) === false) {
+        res.json(false);
+    } else {
+        await display.setPrimary(id);
+        res.json(true);
+    }
+}
+
+exports.setPlace = async (req, res) => {
+    var command = req.params.placeCommand;
+
+    var result = await display.setPlace(
+        command,
+        parseInt(req.params.leftId),
+        parseInt(req.params.rightId)
+    );
+
+    if (typeof result === 'string') {
+        res.json(result)
+    }
+    console.log('setPlace result', result);
+    res.json(result);
 }

@@ -39,8 +39,8 @@ app.use(function (err, req, res, next) {
 });
 
 //CUSTOM 
-const tools = require('./controllers/components/tools');
-
+const tools = require('./helper/tools');
+const displayModel = require('./models/display');
 var configController = require('./controllers/config');
 var index_controller = require('./controllers/index');
 
@@ -60,9 +60,6 @@ if (global.config.ip === undefined) {
 
 if (global.config.mac === undefined) {
   configController.save('mac', index_controller.getMacAddress())
-}
-if (global.config.display === undefined) {
-  configController.save('display', tools.listMonitors())
 }
 
 global.config = configController.getConfig();

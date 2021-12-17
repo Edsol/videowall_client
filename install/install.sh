@@ -26,13 +26,17 @@ sudo npm i -g pm2
 
 echo 'module.exports = {
   apps : [{
-    name   : "pi_client",
-    script : "pi_client/bin/www"
+    name   : "videowallClient",
+    script : "bin/www",
+    "watch": "../",
+    "ignore_watch" : ["node_modules"],
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
   }]
-}' >> ../../ecosystem.config.js
+}' >> ../ecosystem.config.js
 
-pm2 start ../../ecosystem.config.js
+pm2 start ../ecosystem.config.js
 sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pi --hp /home/debian
+pm2 save --force
 
 
 npm install
