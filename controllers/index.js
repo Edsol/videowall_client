@@ -137,7 +137,8 @@ exports.openUrl = async (req, res, next) => {
 exports.closeBrowser = async (req, res) => {
     // killall chromium-browser
     // pkill -o chromium
-    exec(`killall chromium-browser`, (error, stdout, stderr) => {
+    browserCommand = config.chromiumCommand || 'chromium-browser';
+    exec(`killall ` + browserCommand, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json(error.message);
