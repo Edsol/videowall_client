@@ -15,7 +15,7 @@ class Table {
     async get(id) {
         return await prisma[this.tableName].findFirst({
             where: {
-                id: id
+                id: parseInt(id)
             }
         });
     }
@@ -28,7 +28,7 @@ class Table {
     async setField(id, field, value) {
         return await prisma[this.tableName].updateMany({
             where: {
-                id: id
+                id: parseInt(id)
             },
             data: {
                 [field]: value
