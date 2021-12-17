@@ -1,4 +1,4 @@
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 const fs = require('fs');
 const ip = require('ip');
 const getmac = require('getmac');
@@ -124,17 +124,17 @@ exports.openUrl = async (req, res, next) => {
     var command = `unclutter & ${browserCommand} ${url} ${config.chromiumParams} --window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition} &`;
 
     console.log('openUrl command', command)
-    exec(command, (error, stdout, stderr) => {
+    var execResponse = exec(command, (error, stdout, stderr) => {
         if (error) {
             res.json({ executed: false, errors: error.message });
         }
 
 
     });
+
+    console.log('execResponse', execResponse)
     configController.save('lastUrl', url);
-    exec('echo $!', (error, stdout) => {
-        res.json({ executed: true, errors: null, pid: stdout });
-    })
+    res.json({ executed: true, errors: null });
 }
 
 exports.closeBrowser = async (req, res) => {
