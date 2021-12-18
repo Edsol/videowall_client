@@ -126,6 +126,7 @@ exports.openUrl = async (req, res, next) => {
         if (error) {
             res.json({ executed: false, errors: error.message });
         }
+        console.log('first exec execute');
     });
     var resp = null;
 
@@ -133,6 +134,7 @@ exports.openUrl = async (req, res, next) => {
         var regex = new RegExp(/[1-9]{7}/);
         resp = regex.exec(stdout);
         configController.save('lastUrl', url);
+        console.log('first exec execute');
     });
     res.json({ executed: true, errors: null, pid: resp[0] });
 }
