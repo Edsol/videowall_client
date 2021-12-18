@@ -123,34 +123,17 @@ exports.openUrl = async (req, res, next) => {
     const ChromeLauncher = require('chrome-launcher');
     ChromeLauncher.launch({
         startingUrl: url,
+        ignoreDefaultFlags: true,
         chromeFlags: [
             "--display=:0",
             '--kiosk',
             `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`,
         ]
     }).then(chrome => {
-        console.log(chrome)
+        console.log(`chrome pid: ${chrome.pid}`)
         console.log(`Chrome debugging port running on ${chrome.port}`);
         res.json({ executed: true, pid: chrome.pid })
     });
-
-    // var displayObj = await display.get(displayId);
-    // var command = `unclutter & ${browserCommand} ${url} ${config.chromiumParams} --window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition} &`;
-
-    // console.log('openUrl command', command)
-    // exec(command, (error, stdout, stderr) => {
-    //     if (error) {
-    //         res.json({ executed: false, errors: error.message });
-    //     }
-    // });
-
-    // exec('pgrep -f ' + browserCommand, function (err, stdout, stderr) {
-    //     var regex = new RegExp(/[1-9]{7}/);
-    //     var resp = regex.exec(stdout);
-
-    //     configController.save('lastUrl', url);
-    // });
-    // res.json({ executed: true, errors: null });
 }
 
 exports.closeBrowserByPid = async (req, res) => {
