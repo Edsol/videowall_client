@@ -46,3 +46,7 @@ cp conky.conf /home/debian/.config/conky
 
 mkdir /home/debian/.config/openbox
 sudo echo '/usr/bin/conky &' >> /home/debian/.config/openbox/autostart
+
+# Run one time to create profile
+DISPLAY=:0 chromium --profile-directory=Default1 edoo.poweringsrl.it &
+DISPLAY=:0 chromium --profile-directory=Default2 edoo.poweringsrl.it &

@@ -117,13 +117,28 @@ exports.openUrl = async (req, res, next) => {
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
     }
+
+    if (displayId === undefined || displayId === null) {
+        displayId = await display.getPrimary();
+    }
+
+    if (displayId === undefined || displayId === null) {
+        var first = await display.getLast();
+        displayId = first.id;
+    }
+
     browserCommand = config.chromiumCommand || 'chromium-browser';
     var displayObj = await display.get(displayId);
 
     const ChromeLauncher = require('chrome-launcher');
+    var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
+
+    if (fs.existsSync(userDataDir) === false) {
+        userDataDir = null;
+    }
+
     ChromeLauncher.launch({
         startingUrl: url,
-        // ignoreDefaultFlags: true,
         chromeFlags: [
             "--display=:0",
             '--kiosk',
@@ -131,7 +146,7 @@ exports.openUrl = async (req, res, next) => {
             "--profile-directory=Default" + displayId,
             "--disable-features=Translate"
         ],
-        userDataDir: `/home/debian/.config/chromium/Default${displayId}`
+        userDataDir: userDataDir
     }).then(chrome => {
         console.log(`chrome`, chrome)
         console.log(`Chrome debugging port running on ${chrome.port}`);

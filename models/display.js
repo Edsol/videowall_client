@@ -87,6 +87,12 @@ class Display extends Table {
 		return await this.setField(id, 'primary', true)
 	}
 
+	async getPrimary() {
+		return await this.find({
+			primary: true
+		})
+	}
+
 	/**
 	 * Set monitor position
 	 * 

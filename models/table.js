@@ -20,6 +20,17 @@ class Table {
         });
     }
 
+    async find(where) {
+        return await prisma[this.tableName].findFirst({
+            where: where
+        });
+    }
+
+    async getLast() {
+        var all = await this.getList();
+        return all[0];
+    }
+
     async exists(where = {}) {
         var display = await prisma[this.tableName].findFirst({ where: where });
         return display === null ? false : true;
