@@ -122,8 +122,12 @@ exports.openUrl = async (req, res, next) => {
 
     const ChromeLauncher = require('chrome-launcher');
     ChromeLauncher.launch({
-        startingUrl: 'https://google.com',
-        chromeFlags: ['--kiosk', `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`, "--display=:0"]
+        startingUrl: url,
+        chromeFlags: [
+            "--display=:0",
+            '--kiosk',
+            `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`,
+        ]
     }).then(chrome => {
         console.log(chrome)
         console.log(`Chrome debugging port running on ${chrome.port}`);
