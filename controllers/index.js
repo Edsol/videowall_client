@@ -119,7 +119,7 @@ exports.openUrl = async (req, res, next) => {
     }
     browserCommand = config.chromiumCommand || 'chromium-browser';
     var displayObj = await display.get(displayId);
-
+    console.log('chrome /home/debian/.config/chromium/Default' + displayId)
     const ChromeLauncher = require('chrome-launcher');
     ChromeLauncher.launch({
         startingUrl: url,
@@ -129,7 +129,7 @@ exports.openUrl = async (req, res, next) => {
             '--kiosk',
             `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`,
         ],
-        userDataDir: "/home/debian/.config/chromium/Default"
+        userDataDir: "/home/debian/.config/chromium/Default" + displayId
     }).then(chrome => {
         console.log(`chrome pid: ${chrome.pid}`)
         console.log(`Chrome debugging port running on ${chrome.port}`);
