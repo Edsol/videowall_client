@@ -123,7 +123,7 @@ exports.openUrl = async (req, res, next) => {
     const ChromeLauncher = require('chrome-launcher');
     ChromeLauncher.launch({
         startingUrl: url,
-        ignoreDefaultFlags: true,
+        // ignoreDefaultFlags: true,
         chromeFlags: [
             "--display=:0",
             '--kiosk',
