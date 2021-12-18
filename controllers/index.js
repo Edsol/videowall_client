@@ -128,7 +128,8 @@ exports.openUrl = async (req, res, next) => {
             "--display=:0",
             '--kiosk',
             `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`,
-        ]
+        ],
+        userDataDir: "/home/debian/.config/chromium/Default"
     }).then(chrome => {
         console.log(`chrome pid: ${chrome.pid}`)
         console.log(`Chrome debugging port running on ${chrome.port}`);
