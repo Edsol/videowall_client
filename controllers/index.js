@@ -118,23 +118,37 @@ exports.openUrl = async (req, res, next) => {
         res.json({ executed: false, errors: 'No url' });
     }
     browserCommand = config.chromiumCommand || 'chromium-browser';
-    console.log('displayId', displayId)
     var displayObj = await display.get(displayId);
-    console.log('displayData', displayObj)
     var command = `unclutter & ${browserCommand} ${url} ${config.chromiumParams} --window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition} &`;
 
     console.log('openUrl command', command)
-    var execResponse = execSync(command, (error, stdout, stderr) => {
+    exec(command, (error, stdout, stderr) => {
         if (error) {
             res.json({ executed: false, errors: error.message });
         }
-
-
     });
+    var resp = null;
 
-    console.log('execResponse', execResponse.toString())
-    configController.save('lastUrl', url);
-    res.json({ executed: true, errors: null });
+    exec('pgrep -f ' + browserCommand, function (err, stdout, stderr) {
+        var regex = new RegExp(/[1-9]{7}/);
+        resp = regex.exec(stdout);
+        configController.save('lastUrl', url);
+    });
+    res.json({ executed: true, errors: null, pid: resp[0] });
+}
+
+exports.closeBrowserByPid = async (req, res) => {
+    if (req.params.id === null) {
+        res.json(false);
+    }
+    exec(`kill ` + req.params.id, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json(error.message);
+        }
+
+        res.json(true);
+    })
 }
 
 exports.closeBrowser = async (req, res) => {
@@ -148,7 +162,6 @@ exports.closeBrowser = async (req, res) => {
         }
 
         res.json(true);
-
     })
 }
 

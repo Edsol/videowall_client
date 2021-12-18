@@ -34,7 +34,7 @@ class Display extends Table {
 					primary: primary,
 					width: monitor_info.width || 0,
 					height: monitor_info.height || 0,
-					xZeroPosition: primary ? 0 : monitor_info.width,
+					xZeroPosition: primary ? 0 : monitor_info.width || 0,
 					yZeroPosition: 0
 				};
 

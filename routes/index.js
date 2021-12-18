@@ -9,6 +9,7 @@ router.get('/hostname', index_controller.getHostname)
 router.get('/setHostname/:hostname', index_controller.setHostname)
 router.get('/mac', index_controller.getMacAddress)
 router.post('/openUrl', index_controller.openUrl);
+router.get('/closeBrowserByPid/:id', index_controller.closeBrowserByPid)
 router.get('/closeBrowser', index_controller.closeBrowser)
 router.get('/screenshot', index_controller.getScreenshot)
 router.get('/reboot', index_controller.rebootDevice)
