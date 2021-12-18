@@ -128,7 +128,8 @@ exports.openUrl = async (req, res, next) => {
             "--display=:0",
             '--kiosk',
             `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`,
-            "--profile-directory=Default" + displayId
+            "--profile-directory=Default" + displayId,
+            `--user-data-dir=/home/debian/.config/chromium/Default${displayId}`
         ],
         // userDataDir: "/home/debian/.config/chromium/Default" + displayId
     }).then(chrome => {
