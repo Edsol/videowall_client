@@ -12,7 +12,7 @@ class Display extends Table {
 
 	async parsePosition(info) {
 		if (info.left === 0 && info.top === 0) {
-			return "left";
+			return "center";
 		} else if (info.left > 0 && info.top === 0) {
 			return "right";
 		}
