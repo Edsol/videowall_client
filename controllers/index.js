@@ -110,6 +110,9 @@ exports.setHostname = async (req, res) => {
     res.json(response);
 }
 
+/**
+ * 
+ */
 exports.openUrl = async (req, res, next) => {
     var url = req.body.url;
     var displayId = req.body.display;
@@ -142,7 +145,7 @@ exports.openUrl = async (req, res, next) => {
         chromeFlags: [
             "--display=:0",
             '--kiosk',
-            `--window-position=${displayObj.xZeroPosition},${displayObj.yZeroPosition}`,
+            `--window-position=${displayObj.left},${displayObj.top}`,
             "--profile-directory=Default" + displayId,
             "--disable-features=Translate"
         ],
@@ -154,6 +157,9 @@ exports.openUrl = async (req, res, next) => {
     });
 }
 
+/**
+ * 
+ */
 exports.closeBrowserByPid = async (req, res) => {
     if (req.params.id === null) {
         res.json(false);
@@ -168,9 +174,10 @@ exports.closeBrowserByPid = async (req, res) => {
     })
 }
 
+/**
+ * 
+ */
 exports.closeBrowser = async (req, res) => {
-    // killall chromium-browser
-    // pkill -o chromium
     browserCommand = config.chromiumCommand || 'chromium-browser';
     exec(`killall ` + browserCommand, (error, stdout, stderr) => {
         if (error) {
@@ -195,17 +202,6 @@ exports.getScreenshot = async (req, res) => {
         console.log('upload image in base64 format')
         var base64 = fs.readFileSync(file_path).toString('base64');
         res.json(base64)
-
-        // var format = JSON.parse(req.params.base64);
-        // if (format === true) {
-        //     console.log(format, 'upload image in base64 format')
-        //     var base64 = fs.readFileSync(file_path).toString('base64');
-        //     res.json(base64)
-        // } else {
-        //     console.log(format, 'upload image in binary format')
-        //     // res.sendFile(file_path);
-        //     res.download(file_path);
-        // }
     });
 }
 
@@ -231,6 +227,10 @@ exports.setOsd = async (req, res) => {
             res.json(true);
         })
     });
+}
+
+exports.getMonitorsInfo = async (req, res) => {
+    res.json(await display.extractDisplayInfo());
 }
 
 exports.storeMonitorsInfo = async (req, res) => {

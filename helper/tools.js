@@ -1,5 +1,4 @@
 const { exec } = require("child_process");
-var xrandrParse = require('xrandr-parse')
 const configController = require('../controllers/config');
 global.config = configController.getConfig;
 

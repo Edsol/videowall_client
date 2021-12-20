@@ -1,7 +1,6 @@
 const Table = require('./table');
 const tools = require('../helper/tools');
-var xrandrParse = require('xrandr-parse');
-
+var xrandrParse = require('../libs/xrandrParser');
 
 class Display extends Table {
 	tableName = 'display';
@@ -27,15 +26,13 @@ class Display extends Table {
 			var monitor_info = monitors[port];
 
 			if (monitor_info.connected) {
-				var primary = monitor_info.index === 0 ? true : false;
-
 				var monitor_data = {
 					port: port,
-					primary: primary,
+					primary: monitor_info.primary,
 					width: monitor_info.width || 0,
 					height: monitor_info.height || 0,
-					xZeroPosition: primary ? 0 : monitor_info.width || 0,
-					yZeroPosition: 0
+					left: monitor_info.left || 0,
+					top: monitor_info.top || 0
 				};
 
 				result[monitor_info.index] = monitor_data;

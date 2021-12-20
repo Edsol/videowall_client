@@ -18,6 +18,7 @@ router.get('/getConfig', index_controller.getConfig)
 router.post('/setConfig', index_controller.setConfig)
 router.post('/runCommand', index_controller.runCommand)
 
+router.get('/getMonitorsInfo', index_controller.getMonitorsInfo)
 router.get('/storeMonitorsInfo', index_controller.storeMonitorsInfo)
 router.get('/deleteStoredMonitorsInfo', index_controller.deleteStoredMonitorsInfo)
 router.get('/getMonitors', index_controller.getMonitors)

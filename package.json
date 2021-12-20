@@ -18,8 +18,7 @@
     "ip": "^1.1.5",
     "jfs": "^0.3.0",
     "morgan": "~1.9.1",
-    "node-nmap": "^4.0.0",
-    "xrandr-parse": "^1.0.0"
+    "node-nmap": "^4.0.0"
   },
   "devDependencies": {
     "prisma": "^3.6.0"
