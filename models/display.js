@@ -98,11 +98,11 @@ class Display extends Table {
 	}
 
 	async setPlaceByPort(command, first_port, second_port) {
-		var first_display = this.find({
+		var first_display = await this.find({
 			port: first_port
 		});
 
-		var second_display = this.find({
+		var second_display = await this.find({
 			port: first_port
 		});
 
