@@ -138,7 +138,7 @@ exports.openUrl = async (req, res, next) => {
         displayId = first.id;
     }
 
-    if (displayId) {
+    if (displayId !=== undefined || displayId !== null) {
         var displayObj = await display.get(displayId);
         console.log('displayId', displayId)
         console.log('displayObj', displayObj)
@@ -165,8 +165,6 @@ exports.openUrl = async (req, res, next) => {
         console.log(`Chrome debugging port running on ${chrome.port}`);
         res.json({ executed: true, pid: chrome.pid })
     });
-
-    console.log('ChromeLauncher', ChromeLauncher)
 }
 
 /**
