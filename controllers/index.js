@@ -117,6 +117,14 @@ exports.openUrl = async (req, res, next) => {
     var url = req.body.url;
     var displayId = req.body.display;
 
+    var chromeFlags = [
+        "--display=:0",
+        '--kiosk',
+        // `--window-position=${displayObj.left},${displayObj.top}`,
+        // "--profile-directory=Default" + displayId,
+        "--disable-features=Translate"
+    ];
+
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
     }
@@ -128,6 +136,11 @@ exports.openUrl = async (req, res, next) => {
     if (displayId === undefined || displayId === null) {
         var first = await display.getLast();
         displayId = first.id;
+    }
+
+    if (displayId) {
+        chromeFlags.push("--profile-directory=Default" + displayId);
+        chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
     }
 
     browserCommand = config.chromiumCommand || 'chromium-browser';
@@ -142,13 +155,7 @@ exports.openUrl = async (req, res, next) => {
 
     ChromeLauncher.launch({
         startingUrl: url,
-        chromeFlags: [
-            "--display=:0",
-            '--kiosk',
-            `--window-position=${displayObj.left},${displayObj.top}`,
-            "--profile-directory=Default" + displayId,
-            "--disable-features=Translate"
-        ],
+        chromeFlags: chromeFlags,
         userDataDir: userDataDir
     }).then(chrome => {
         console.log(`chrome`, chrome)
