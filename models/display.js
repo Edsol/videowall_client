@@ -103,9 +103,10 @@ class Display extends Table {
 		});
 
 		var second_display = await this.find({
-			port: first_port
+			port: second_port
 		});
 
+		console.log('command', command);
 		console.log('first_display', first_display);
 		console.log('second_display', second_display)
 
