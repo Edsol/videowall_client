@@ -165,6 +165,8 @@ exports.openUrl = async (req, res, next) => {
         console.log(`Chrome debugging port running on ${chrome.port}`);
         res.json({ executed: true, pid: chrome.pid })
     });
+
+    console.log('ChromeLauncher', ChromeLauncher)
 }
 
 /**
