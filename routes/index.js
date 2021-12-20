@@ -24,6 +24,7 @@ router.get('/deleteStoredMonitorsInfo', index_controller.deleteStoredMonitorsInf
 router.get('/getMonitors', index_controller.getMonitors)
 router.get('/getMonitors/:noParse', index_controller.getMonitors)
 router.get('/setPrimaryMonitor/:id', index_controller.setPrimaryMonitor)
+router.get('/setPlaceByPort/:placeCommand/:leftPort/:rightPort', index_controller.setPlaceByPort)
 router.get('/setPlace/:placeCommand/:leftId/:rightId', index_controller.setPlace)
 
 module.exports = router;
