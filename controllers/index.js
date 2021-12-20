@@ -259,7 +259,7 @@ exports.setPrimaryMonitor = async (req, res) => {
 exports.setPlaceByPort = async (req, res) => {
     console.log('SetPlaceByPort', req.params)
     var result = await display.setPlaceByPort(
-        req.params.command,
+        req.params.placeCommand,
         req.params.leftPort,
         req.params.rightPort
     )
