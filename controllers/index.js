@@ -120,7 +120,10 @@ exports.openUrl = async (req, res, next) => {
     var chromeFlags = [
         "--display=:0",
         '--kiosk',
-        "--disable-features=Translate"
+        "--disable-features=Translate",
+        "--headless",
+        "--disable-gpu",
+        "--no-sandbox"
         // `--window-position=${displayObj.left},${displayObj.top}`,
         // "--profile-directory=Default" + displayId,
 
