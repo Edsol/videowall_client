@@ -141,8 +141,6 @@ exports.openUrl = async (req, res, next) => {
 
     if (displayId !== undefined || displayId !== null) {
         var displayObj = await display.get(displayId);
-        console.log('displayId', displayId)
-        console.log('displayObj', displayObj)
         chromeFlags.push("--profile-directory=Default" + displayId);
         chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
     }
@@ -167,7 +165,10 @@ exports.openUrl = async (req, res, next) => {
         console.log(`chrome`, chrome)
         console.log(`Chrome debugging port running on ${chrome.port}`);
         res.json({ executed: true, pid: chrome.pid })
-    });
+    })
+        .catch(error => {
+            console.log('ChromeLauncher error:', error)
+        });
 }
 
 /**
