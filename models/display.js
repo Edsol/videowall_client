@@ -10,6 +10,19 @@ class Display extends Table {
 		return xrandrParse(monitorsList);
 	}
 
+	async parsePosition(info) {
+		if (info.left === 0 && info.top === 0) {
+			return "left";
+		} else if (info.left > 0 && info.top === 0) {
+			return "right";
+		}
+		else if (info.left === 0 && info.top > 0) {
+			return "above";
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * Get list of display connected
 	 * @param  {} noParse=false
@@ -26,13 +39,15 @@ class Display extends Table {
 			var monitor_info = monitors[port];
 
 			if (monitor_info.connected) {
+				var position = await this.parsePosition(monitor_info);
 				var monitor_data = {
 					port: port,
 					primary: monitor_info.primary,
 					width: monitor_info.width || 0,
 					height: monitor_info.height || 0,
 					left: monitor_info.left || 0,
-					top: monitor_info.top || 0
+					top: monitor_info.top || 0,
+					position: position
 				};
 
 				result[monitor_info.index] = monitor_data;
@@ -57,20 +72,12 @@ class Display extends Table {
 		return true;
 	}
 
-	async getWidth(displayId) {
+	async getField(displayId, field) {
 		if (await this.exists({ id: displayId }) === false) {
-			return 0;
+			return null;
 		}
 		var display = await this.get(displayId)
-		return display.width;
-	}
-
-	async getheight(displayId) {
-		if (await this.exists({ id: displayId }) === false) {
-			return 0;
-		}
-		var display = await this.get(displayId)
-		return display.height;
+		return display[field];
 	}
 
 	/**

@@ -8,11 +8,12 @@ datasource db {
 }
 
 model display {
-  id      Int     @id @default(autoincrement())
-  port    String  @unique
-  primary Boolean @default(false)
-  width   Int?
-  height  Int?
-  left    Int
-  top     Int
+  id       Int     @id @default(autoincrement())
+  port     String  @unique
+  primary  Boolean @default(false)
+  width    Int?
+  height   Int?
+  left     Int
+  top      Int
+  position String
 }
