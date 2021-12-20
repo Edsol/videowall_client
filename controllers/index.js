@@ -132,7 +132,6 @@ exports.openUrl = async (req, res, next) => {
     if (displayId === undefined || displayId === null) {
         displayObj = await display.getPrimary();
         displayId = displayObj.id;
-        console.log('displayId', displayId)
     }
 
     if (displayId === undefined || displayId === null) {
@@ -157,6 +156,8 @@ exports.openUrl = async (req, res, next) => {
     if (fs.existsSync(userDataDir) === false) {
         userDataDir = null;
     }
+
+    console.log('chromeFlags', chromeFlags)
 
     ChromeLauncher.launch({
         startingUrl: url,
