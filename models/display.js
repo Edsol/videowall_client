@@ -97,6 +97,21 @@ class Display extends Table {
 		})
 	}
 
+	async setPlaceByPort(command, first_port, second_port) {
+		var first_display = display.find({
+			port: first_port
+		});
+
+		var second_display = display.find({
+			port: first_port
+		});
+
+		console.log('first_display', first_display);
+		console.log('second_display', second_display)
+
+		return await this.setPlace(command, first_display.id, second_display.id);
+	}
+
 	/**
 	 * Set monitor position
 	 * 
