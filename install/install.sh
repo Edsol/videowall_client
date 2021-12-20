@@ -2,7 +2,7 @@
 #!/bin/bash
 sudo apt-get install --no-install-recommends xserver-xorg x11-xserver-utils openbox obconf lightdm -y
 sudo apt-get install unclutter chromium openssl shellinabox -y
-sudo apt install git curl vsftpd scrot xosd-bin conky jq -y
+sudo apt install git htop curl vsftpd scrot xosd-bin conky jq -y
 sudo apt-get install firmware-linux-nonfree libgl1-mesa-dri xserver-xorg-video-ati
 
 

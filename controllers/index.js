@@ -166,7 +166,7 @@ exports.openUrl = async (req, res, next) => {
             // port: 9222,
             startingUrl: url,
             // chromePath: '/usr/bin/chromium',
-            chromeFlags: chromeFlags,
+            // chromeFlags: chromeFlags,
             userDataDir: userDataDir
         }).then(chrome => {
             console.log(`chrome`, chrome)
