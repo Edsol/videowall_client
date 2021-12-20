@@ -160,6 +160,7 @@ exports.openUrl = async (req, res, next) => {
 
     try {
         ChromeLauncher.launch({
+            port: 9222,
             startingUrl: url,
             chromePath: '/usr/bin/chromium',
             chromeFlags: chromeFlags,
