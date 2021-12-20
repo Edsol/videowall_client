@@ -158,19 +158,20 @@ exports.openUrl = async (req, res, next) => {
 
     console.log('chromeFlags', chromeFlags)
 
-    ChromeLauncher.launch({
-        startingUrl: url,
-        chromePath: '/usr/bin/chromium',
-        chromeFlags: chromeFlags,
-        userDataDir: userDataDir
-    }).then(chrome => {
-        console.log(`chrome`, chrome)
-        console.log(`Chrome debugging port running on ${chrome.port}`);
-        res.json({ executed: true, pid: chrome.pid })
-    })
-        .catch(error => {
-            console.log('ChromeLauncher error:', error)
-        });
+    try {
+        ChromeLauncher.launch({
+            startingUrl: url,
+            chromePath: '/usr/bin/chromium',
+            chromeFlags: chromeFlags,
+            userDataDir: userDataDir
+        }).then(chrome => {
+            console.log(`chrome`, chrome)
+            console.log(`Chrome debugging port running on ${chrome.port}`);
+            res.json({ executed: true, pid: chrome.pid })
+        })
+    } catch (e) {
+        console.log('Chrome catch:', e)
+    }
 }
 
 /**
