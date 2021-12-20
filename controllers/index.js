@@ -146,7 +146,7 @@ exports.openUrl = async (req, res, next) => {
         chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
     }
 
-    browserCommand = config.chromiumCommand || 'chromium-browser';
+    browserCommand = config.chromiumCommand || 'chromium';
 
 
     const ChromeLauncher = require('chrome-launcher');
