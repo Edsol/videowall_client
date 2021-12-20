@@ -130,7 +130,9 @@ exports.openUrl = async (req, res, next) => {
     }
 
     if (displayId === undefined || displayId === null) {
-        displayId = await display.getPrimary();
+        displayObj = await display.getPrimary();
+        displayId = displayObj.id;
+        console.log('displayId', displayId)
     }
 
     if (displayId === undefined || displayId === null) {
