@@ -120,9 +120,10 @@ exports.openUrl = async (req, res, next) => {
     var chromeFlags = [
         "--display=:0",
         '--kiosk',
+        "--disable-features=Translate"
         // `--window-position=${displayObj.left},${displayObj.top}`,
         // "--profile-directory=Default" + displayId,
-        "--disable-features=Translate"
+
     ];
 
     if (url === '') {
@@ -159,6 +160,7 @@ exports.openUrl = async (req, res, next) => {
 
     ChromeLauncher.launch({
         startingUrl: url,
+        chromePath: '/usr/bin/chromium',
         chromeFlags: chromeFlags,
         userDataDir: userDataDir
     }).then(chrome => {
