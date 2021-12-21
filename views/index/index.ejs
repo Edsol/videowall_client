@@ -10,6 +10,7 @@
   <button id='loadUrl' class='btn btn-sm btn-primary'>Load url</button>
   <br><br>
   <button id="reloadDisplays" class='btn btn-sm btn-primary float-right'>Reload displays</button>
+  <button id="reboot" class='btn btn-sm btn-danger float-right'>Reboot device</button>
 </div>
 
 <hr>
@@ -85,5 +86,9 @@
         console.log('reload display error', response.data)
       }
     })
+  })
+
+  $('#reboot').on('click', event =>{
+    axios.get('reboot')
   })
 </script>
