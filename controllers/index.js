@@ -113,7 +113,7 @@ exports.openUrl = async (req, res) => {
     var displayId = req.body.display;
 
     var chromeFlags = [
-        // "--display=:0",
+        "--display=:0",
         '--kiosk',
         "--disable-features=Translate",
         // "--headless",
@@ -150,25 +150,25 @@ exports.openUrl = async (req, res) => {
 
     console.log('displayObj', displayObj)
     console.log('displayId', displayId);
+    var userDataDir = `/home/powering/.config/chromium/Default${displayId}`;
 
     var pid = null;
 
     if (req.params.chromeLauncher === true) {
-        var pid = await chromeLauncher(url, chromeFlags);
+        var pid = await chromeLauncher(url, chromeFlags, userDataDir);
         console.log('pid', pid)
         res.json({ executed: true, pid: pid })
     } else if (req.params.chromeLauncher === false || req.params.chromeLauncher === undefined) {
-        var pid = await browserLauncher(url, chromeFlags);
+        var pid = await browserLauncher(url, chromeFlags, userDataDir, true);
         res.json({ executed: true, pid: pid })
     } else {
         res.json({ executed: false, pid: null })
     }
 }
 
-async function chromeLauncher(url, chromeFlags) {
+async function chromeLauncher(url, chromeFlags, userDataDir) {
     console.log('url launched with chromeLauncher', chromeFlags)
     const ChromeLauncher = require('chrome-launcher');
-    var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
 
     if (fs.existsSync(userDataDir) === false) {
         userDataDir = null;
@@ -187,19 +187,25 @@ async function chromeLauncher(url, chromeFlags) {
     })
 }
 
-async function browserLauncher(url, chromeFlags, detach = true) {
+async function browserLauncher(url, chromeFlags, userDataDir, detach = true) {
     console.log('url launched with browserLauncher', chromeFlags)
     const launcher = require('@httptoolkit/browser-launcher');
     browserCommand = config.chromiumCommand || 'chromium';
 
+
+    var browserOptions = {
+        browser: browserCommand,
+        detached: true,
+        // noProxy: ['127.0.0.1', 'localhost'],
+        options: chromeFlags,
+        profile: userDataDir
+    };
+
+    console.log('browserOptions', browserOptions)
+
     return new Promise((resolve, reject) => {
         launcher(async function (err, launch) {
-            launch(url, {
-                browser: browserCommand,
-                detached: true,
-                // noProxy: ['127.0.0.1', 'localhost'],
-                options: chromeFlags
-            },
+            launch(url, browserOptions,
                 async function (err, instance) {
                     if (err) {
                         // return console.error(err);
