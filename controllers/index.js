@@ -119,8 +119,8 @@ exports.openUrl = async (req, res, next) => {
 
     var chromeFlags = [
         "--display=:0",
-        '--kiosk',
-        "--disable-features=Translate",
+        // '--kiosk',
+        // "--disable-features=Translate",
         "--headless",
         "--disable-gpu",
         "--no-sandbox"
@@ -163,7 +163,7 @@ exports.openUrl = async (req, res, next) => {
 
     try {
         ChromeLauncher.launch({
-            // port: 9222,
+            port: 9222,
             startingUrl: url,
             // chromePath: '/usr/bin/chromium',
             // chromeFlags: chromeFlags,

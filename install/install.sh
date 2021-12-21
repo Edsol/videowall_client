@@ -26,7 +26,8 @@ sudo apt-get install firmware-linux-nonfree libgl1-mesa-dri xserver-xorg-video-a
 sudo apt-get install nodejs npm -y
 sudo npm i -g pm2
 npm install @prisma/client
-npm install -g npm@latest
+npm install
+# npm install -g npm@latest
 
 npx prisma db push
 
@@ -35,8 +36,6 @@ pm2 start ../ecosystem.config.js
 sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pi --hp /home/debian
 pm2 save --force
 
-
-npm install
 
 mkdir /home/debian/.config/conky
 cp conky.conf /home/debian/.config/conky
