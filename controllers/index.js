@@ -134,12 +134,14 @@ exports.openUrl = async (req, res, next) => {
     }
 
     if (displayId === undefined || displayId === null) {
-        displayObj = await display.getPrimary();
+        var displayObj = await display.getPrimary();
+        console.log('primaryDisplay', displayObj)
         displayId = displayObj.id || null;
     }
 
     if (displayId === undefined || displayId === null) {
         var first = await display.getLast();
+        console.log('getLast', first)
         displayId = first.id;
     }
 
