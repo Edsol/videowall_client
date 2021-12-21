@@ -17,6 +17,7 @@ router.get('/osd/:text', index_controller.setOsd)
 router.get('/getConfig', index_controller.getConfig)
 router.post('/setConfig', index_controller.setConfig)
 router.post('/runCommand', index_controller.runCommand)
+router.get('/reloadDisplays', index_controller.reloadDisplays)
 
 router.get('/getMonitorsInfo', index_controller.getMonitorsInfo)
 router.get('/storeMonitorsInfo', index_controller.storeMonitorsInfo)

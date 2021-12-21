@@ -8,6 +8,8 @@
     <% }) %> 
   </select>
   <button id='loadUrl' class='btn btn-sm btn-primary'>Load url</button>
+  <br><br>
+  <button id="reloadDisplays" class='btn btn-sm btn-primary float-right'>Reload displays</button>
 </div>
 
 <hr>
@@ -70,6 +72,17 @@
       console.log(response.data)
       if(response.data){
         console.log('url executed',response.data)
+      }
+    })
+  })
+
+  $('#reloadDisplays').on('click', event =>{
+    axios.get('reloadDisplays')
+    .then(response =>{
+      if(response.data === true){
+        location.reload();
+      }else{
+        console.log('reload display error', response.data)
       }
     })
   })

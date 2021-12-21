@@ -348,3 +348,9 @@ exports.setPlace = async (req, res) => {
     console.log('setPlace result', result);
     res.json(result);
 }
+
+exports.reloadDisplays = async (req, res) => {
+    await display.deleteAll({});
+    await display.storeInfo();
+    res.json(true);
+}
