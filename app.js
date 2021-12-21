@@ -49,6 +49,16 @@ if (global.config.mac === undefined) {
   configController.save('mac', index_controller.getMacAddress())
 }
 
+const displayModel = require('./models/display');
+const display = new displayModel();
+
+(async () => {
+  var displayList = await display.getList();
+  if (displayList.length === 0) {
+    await display.storeInfo()
+  }
+})();
+
 global.config = configController.getConfig();
 
 
