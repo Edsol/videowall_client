@@ -350,7 +350,9 @@ exports.setPlace = async (req, res) => {
 }
 
 exports.reloadDisplays = async (req, res) => {
-    await display.deleteAll({});
+    var countDeleted = await display.deleteAll({});
+    console.log('delete all display', countDeleted);
     await display.storeInfo();
+    console.log('stored display info')
     res.json(true);
 }
