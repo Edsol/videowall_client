@@ -9,19 +9,14 @@ const display = new displayModel();
 const tools = require('../helper/tools');
 
 global.config = configController.getConfig;
-// var chromium_params = " --display=:0 --start-fullscreen --window-position=9000,9000 --disable-inforbars --kiosk";
-// 
-// Doppia finestra
-// chromium-browser --new-window --start-fullscreen --window-position=0,0 --user-data-dir=Default --start-fullscreen --display=:0 http://google.com
-// chromium-browser --new-window --start-fullscreen --window-position=1920,0 --user-data-dir=Default --start-fullscreen --display=:0 http://google.com
-
-// chromium-browser --new-window --start-fullscreen  --user-data-dir=Default --display=:0 --window-position=0,0 --window-size=1920,1080 --kiosk tp://google.com
-
 
 exports.index = async (req, res) => {
+    var displayList = await display.getList();
+
     res.render('index', {
         title: 'PiClient: ' + (config.hostname || '-----'),
-        hostname: config.hostname
+        hostname: config.hostname,
+        displays: displayList
     });
 }
 
@@ -113,7 +108,7 @@ exports.setHostname = async (req, res) => {
 /**
  * 
  */
-exports.openUrl = async (req, res, next) => {
+exports.openUrl = async (req, res) => {
     var url = req.body.url;
     var displayId = req.body.display;
 
@@ -136,14 +131,12 @@ exports.openUrl = async (req, res, next) => {
     if (displayId === undefined || displayId === null) {
         var displayObj = await display.getPrimary();
         if (displayObj !== null) {
-            console.log('primaryDisplay', displayObj)
             displayId = displayObj.id || null;
         }
     }
 
     if (displayId === undefined || displayId === null) {
         var first = await display.getLast();
-        console.log('first display', first)
         displayId = first.id;
     }
 
@@ -153,59 +146,80 @@ exports.openUrl = async (req, res, next) => {
         chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
     }
 
-    // const ChromeLauncher = require('chrome-launcher');
-    // var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
+    var pid = null;
 
-    // if (fs.existsSync(userDataDir) === false) {
-    //     userDataDir = null;
-    // }
+    if (req.params.chromeLauncher === true) {
+        var pid = await chromeLauncher(url, chromeFlags);
+        console.log('pid', pid)
+        res.json({ executed: true, pid: pid })
+    } else if (req.params.chromeLauncher === false || req.params.chromeLauncher === undefined) {
+        var pid = await browserLauncher(url, chromeFlags);
+        res.json({ executed: true, pid: pid })
+    } else {
+        res.json({ executed: false, pid: null })
+    }
+}
 
-    // console.log('chromeFlags', chromeFlags)
-    // ChromeLauncher.launch({
-    //     port: 9222,
-    //     startingUrl: url,
-    //     // chromePath: '/usr/bin/chromium',
-    //     chromeFlags: chromeFlags,
-    //     userDataDir: userDataDir
-    // }).then(chrome => {
-    //     console.log(`chrome`, chrome)
-    //     console.log(`Chrome debugging port running on ${chrome.port}`);
-    //     res.json({ executed: true, pid: chrome.pid })
-    // })
+async function chromeLauncher(url, chromeFlags) {
+    console.log('url launched with chromeLauncher')
+    const ChromeLauncher = require('chrome-launcher');
+    var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
 
+    if (fs.existsSync(userDataDir) === false) {
+        userDataDir = null;
+    }
+
+    console.log('chromeFlags', chromeFlags)
+    ChromeLauncher.launch({
+        port: 9222,
+        startingUrl: url,
+        // chromePath: '/usr/bin/chromium',
+        chromeFlags: chromeFlags,
+        userDataDir: userDataDir
+    }).then(chrome => {
+        console.log(`chrome`, chrome)
+        console.log(`Chrome debugging port running on ${chrome.port}`);
+        res.json({ executed: true, pid: chrome.pid })
+    })
+}
+
+async function browserLauncher(url, chromeFlags, detach = true) {
+    console.log('url launched with browserLauncher')
     const launcher = require('@httptoolkit/browser-launcher');
-
-
     browserCommand = config.chromiumCommand || 'chromium';
 
+    return new Promise((resolve, reject) => {
+        launcher(async function (err, launch) {
+            launch(url, {
+                browser: browserCommand,
+                detached: true,
+                // noProxy: ['127.0.0.1', 'localhost'],
+                options: chromeFlags
+            },
+                async function (err, instance) {
+                    if (err) {
+                        // return console.error(err);
+                        reject(err);
+                    }
 
-    launcher(function (err, launch) {
-        launch(url, {
-            browser: browserCommand,
-            detached: true,
-            noProxy: ['127.0.0.1', 'localhost'],
-            options: chromeFlags
-        },
-            function (err, instance) {
-                if (err) {
-                    return console.error(err);
+                    if (detach === true) {
+                        instance.process.unref();
+                        instance.process.stdin.unref();
+                        instance.process.stdout.unref();
+                        instance.process.stderr.unref();
+                    }
+
+                    console.log('Instance started with PID:', instance.pid);
+
+                    instance.on('stop', function (code) {
+                        console.log('Instance stopped with exit code:', code);
+                    });
+
+                    resolve(instance.pid);
                 }
-                instance.process.unref();
-                instance.process.stdin.unref();
-                instance.process.stdout.unref();
-                instance.process.stderr.unref();
-
-                console.log('Instance started with PID:', instance.pid);
-
-                instance.on('stop', function (code) {
-                    console.log('Instance stopped with exit code:', code);
-                });
-
-                res.json({ executed: true, pid: instance.pid })
-            }
-        );
-    });
-
+            );
+        });
+    })
 }
 
 /**
