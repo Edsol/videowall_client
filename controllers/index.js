@@ -119,13 +119,13 @@ exports.openUrl = async (req, res, next) => {
 
     var chromeFlags = [
         "--display=:0",
-        // '--kiosk',
-        // "--disable-features=Translate",
-        "--headless",
-        "--disable-gpu",
-        "--no-sandbox"
+        '--kiosk',
+        "--disable-features=Translate",
+        // "--headless",
+        // "--disable-gpu",
+        // "--no-sandbox"
         // `--window-position=${displayObj.left},${displayObj.top}`,
-        // "--profile-directory=Default" + displayId,
+        "--profile-directory=Default" + displayId,
 
     ];
 
@@ -149,33 +149,52 @@ exports.openUrl = async (req, res, next) => {
         chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
     }
 
+    // const ChromeLauncher = require('chrome-launcher');
+    // var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
+
+    // if (fs.existsSync(userDataDir) === false) {
+    //     userDataDir = null;
+    // }
+
+    // console.log('chromeFlags', chromeFlags)
+    // ChromeLauncher.launch({
+    //     port: 9222,
+    //     startingUrl: url,
+    //     // chromePath: '/usr/bin/chromium',
+    //     chromeFlags: chromeFlags,
+    //     userDataDir: userDataDir
+    // }).then(chrome => {
+    //     console.log(`chrome`, chrome)
+    //     console.log(`Chrome debugging port running on ${chrome.port}`);
+    //     res.json({ executed: true, pid: chrome.pid })
+    // })
+
+    const launcher = require('@httptoolkit/browser-launcher');
+
+
     browserCommand = config.chromiumCommand || 'chromium';
 
 
-    const ChromeLauncher = require('chrome-launcher');
-    var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
+    launcher(function (err, launch) {
+        launch(url, {
+            browser: browserCommand,
+            noProxy: ['127.0.0.1', 'localhost'],
+            options: chromeFlags
+        },
+            function (err, instance) {
+                if (err) {
+                    return console.error(err);
+                }
 
-    if (fs.existsSync(userDataDir) === false) {
-        userDataDir = null;
-    }
+                console.log('Instance started with PID:', instance.pid);
 
-    console.log('chromeFlags', chromeFlags)
+                instance.on('stop', function (code) {
+                    console.log('Instance stopped with exit code:', code);
+                });
+            }
+        );
+    });
 
-    try {
-        ChromeLauncher.launch({
-            port: 9222,
-            startingUrl: url,
-            // chromePath: '/usr/bin/chromium',
-            // chromeFlags: chromeFlags,
-            userDataDir: userDataDir
-        }).then(chrome => {
-            console.log(`chrome`, chrome)
-            console.log(`Chrome debugging port running on ${chrome.port}`);
-            res.json({ executed: true, pid: chrome.pid })
-        })
-    } catch (e) {
-        console.log('Chrome catch:', e)
-    }
 }
 
 /**

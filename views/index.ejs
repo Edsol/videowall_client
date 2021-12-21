@@ -43,7 +43,7 @@
 
     });
     $('#send').on('click', (event) => {
-      axios.post('run', { url: $('#url').val() })
+      axios.post('openUrl', { url: $('#url').val() })
         .then((response) => {
           if (response.data.executed) {
             console.log('executed');
