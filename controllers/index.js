@@ -113,7 +113,7 @@ exports.openUrl = async (req, res) => {
     var displayId = req.body.display;
 
     var chromeFlags = [
-        "--display=:0",
+        // "--display=:0",
         '--kiosk',
         "--disable-features=Translate",
         // "--headless",
