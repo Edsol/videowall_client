@@ -190,6 +190,7 @@ exports.openUrl = async (req, res, next) => {
                 if (err) {
                     return console.error(err);
                 }
+                console.log('Browser instance data', instance)
 
                 console.log('Instance started with PID:', instance.pid);
 
