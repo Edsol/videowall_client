@@ -142,9 +142,14 @@ exports.openUrl = async (req, res) => {
 
     if (displayId !== undefined || displayId !== null) {
         var displayObj = await display.get(displayId);
-        chromeFlags.push("--profile-directory=Default" + displayId);
-        chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
+        if (displayObj !== null) {
+            chromeFlags.push("--profile-directory=Default" + displayId);
+            chromeFlags.push(`--window-position=${displayObj.left},${displayObj.top}`);
+        }
     }
+
+    console.log('displayObj', displayObj)
+    console.log('displayId', displayId);
 
     var pid = null;
 
@@ -161,7 +166,7 @@ exports.openUrl = async (req, res) => {
 }
 
 async function chromeLauncher(url, chromeFlags) {
-    console.log('url launched with chromeLauncher')
+    console.log('url launched with chromeLauncher', chromeFlags)
     const ChromeLauncher = require('chrome-launcher');
     var userDataDir = `/home/debian/.config/chromium/Default${displayId}`;
 
@@ -169,7 +174,6 @@ async function chromeLauncher(url, chromeFlags) {
         userDataDir = null;
     }
 
-    console.log('chromeFlags', chromeFlags)
     ChromeLauncher.launch({
         port: 9222,
         startingUrl: url,
@@ -184,7 +188,7 @@ async function chromeLauncher(url, chromeFlags) {
 }
 
 async function browserLauncher(url, chromeFlags, detach = true) {
-    console.log('url launched with browserLauncher')
+    console.log('url launched with browserLauncher', chromeFlags)
     const launcher = require('@httptoolkit/browser-launcher');
     browserCommand = config.chromiumCommand || 'chromium';
 
