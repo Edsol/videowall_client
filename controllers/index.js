@@ -116,9 +116,9 @@ exports.openUrl = async (req, res) => {
         "--display=:0",
         '--kiosk',
         "--disable-features=Translate",
-        "--headless",
+        // "--headless",
         "--disable-gpu",
-        // "--no-sandbox"
+        "--no-sandbox"
         // `--window-position=${displayObj.left},${displayObj.top}`,
         // "--profile-directory=Default" + displayId,
 
