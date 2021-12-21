@@ -190,18 +190,16 @@ exports.openUrl = async (req, res, next) => {
                 if (err) {
                     return console.error(err);
                 }
-                console.log('Browser instance data', instance)
+                instance.process.unref();
+                instance.process.stdin.unref();
+                instance.process.stdout.unref();
+                instance.process.stderr.unref();
 
                 console.log('Instance started with PID:', instance.pid);
 
                 instance.on('stop', function (code) {
                     console.log('Instance stopped with exit code:', code);
                 });
-
-                instance.process.unref();
-                instance.process.stdin.unref();
-                instance.process.stdout.unref();
-                instance.process.stderr.unref();
 
                 res.json({ executed: true, pid: instance.pid })
             }
