@@ -143,7 +143,7 @@ exports.openUrl = async (req, res, next) => {
 
     if (displayId === undefined || displayId === null) {
         var first = await display.getLast();
-        console.log('getLast', first)
+        console.log('first display', first)
         displayId = first.id;
     }
 
@@ -182,6 +182,7 @@ exports.openUrl = async (req, res, next) => {
     launcher(function (err, launch) {
         launch(url, {
             browser: browserCommand,
+            detached: true,
             noProxy: ['127.0.0.1', 'localhost'],
             options: chromeFlags
         },
@@ -195,6 +196,13 @@ exports.openUrl = async (req, res, next) => {
                 instance.on('stop', function (code) {
                     console.log('Instance stopped with exit code:', code);
                 });
+
+                instance.process.unref();
+                instance.process.stdin.unref();
+                instance.process.stdout.unref();
+                instance.process.stderr.unref();
+
+                res.json({ executed: true, pid: instance.pid })
             }
         );
     });
