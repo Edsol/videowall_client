@@ -116,11 +116,11 @@ exports.openUrl = async (req, res) => {
         "--display=:0",
         '--kiosk',
         "--disable-features=Translate",
-        // "--headless",
-        // "--disable-gpu",
-        // "--no-sandbox"
+        "--headless",
+        "--disable-gpu",
+        "--no-sandbox"
         // `--window-position=${displayObj.left},${displayObj.top}`,
-        "--profile-directory=Default" + displayId,
+        // "--profile-directory=Default" + displayId,
 
     ];
 
