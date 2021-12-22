@@ -268,7 +268,8 @@ exports.getScreenshot = async (req, res) => {
     const screenshot = require('screenshot-desktop')
 
     file_path = __basedir + '/tmp/screenshot.png';
-    screenshot({ filename: file_path });
+    var options = { filename: file_path };
+    screenshot(options);
 
     // var base64 = fs.readFileSync(file_path).toString('base64');
     // res.json(base64)
