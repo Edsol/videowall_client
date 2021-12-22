@@ -264,37 +264,40 @@ exports.closeBrowser = async (req, res) => {
     })
 }
 
+// DISPLAY=:0 import -silent crop 1920x1080+1920+0 -screen png:"/home/debian/videowall_client/../screenshot.png"home/debian/videowall_client/../screenshot.png"
+
 exports.getScreenshot = async (req, res) => {
-    const screenshot = require('screenshot-desktop')
+    // const screenshot = require('screenshot-desktop')
 
-    file_path = __basedir + '/../screenshot.png';
-    var options = {
-        screen: 1,
-        filename: file_path
-    };
-    console.log('list displays', await screenshot.listDisplays())
-    console.log('screenshot options', options)
-    screenshot(options);
+    // file_path = __basedir + '/../screenshot.png';
+    // var options = {
+    //     screen: 1,
+    //     filename: file_path
+    // };
+    // console.log('list displays', await screenshot.listDisplays())
+    // console.log('screenshot options', options)
+    // screenshot(options);
 
-    var base64 = fs.readFileSync(file_path).toString('base64');
-    res.json(base64)
-    // res.json(true);
+    // var base64 = fs.readFileSync(file_path).toString('base64');
+    // res.json(base64)
+
 
     // var command = `DISPLAY=:0 scrot ${file_path} -o`;
-    // // `scrot ${file_path} -o --display=:0`
-    // console.log('scrot command:', command)
-    // exec(command, (error, stdout, stderr) => {
-    //     console.log('inside scrot exec')
-    //     if (error) {
-    //         console.log(`error: ${error.message}`);
-    //         res.json(error.message);
-    //     }
+    var command = `DISPLAY=:0 import -silent crop 1920x1080+1920+0 -screen png:"/home/debian/videowall_client/../screenshot.png"home/debian/videowall_client/../screenshot.png"`;
+    // `scrot ${file_path} -o --display=:0`
+    console.log('scrot command:', command)
+    exec(command, (error, stdout, stderr) => {
+        console.log('inside scrot exec')
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json(error.message);
+        }
 
-    //     console.log('upload image in base64 format')
-    //     // var base64 = fs.readFileSync(file_path).toString('base64');
-    //     // res.json(base64)
-    // });
-    // res.json(false);
+        console.log('upload image in base64 format')
+        // var base64 = fs.readFileSync(file_path).toString('base64');
+        // res.json(base64)
+    });
+    res.json(false);
 }
 
 exports.rebootDevice = async (req, res) => {
