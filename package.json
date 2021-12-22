@@ -21,7 +21,8 @@
     "jfs": "^0.3.0",
     "jquery": "^3.6.0",
     "morgan": "~1.9.1",
-    "node-nmap": "^4.0.0"
+    "node-nmap": "^4.0.0",
+    "screenshot-desktop": "^1.12.7"
   },
   "devDependencies": {
     "prisma": "^3.6.0"
