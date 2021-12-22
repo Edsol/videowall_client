@@ -269,6 +269,7 @@ exports.getScreenshot = async (req, res) => {
 
     file_path = __basedir + '/tmp/screenshot.png';
     var options = { filename: file_path };
+    console.log('screenshot options', options)
     screenshot(options);
 
     // var base64 = fs.readFileSync(file_path).toString('base64');
