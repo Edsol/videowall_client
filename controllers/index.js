@@ -270,8 +270,10 @@ exports.getScreenshot = async (req, res) => {
     file_path = __basedir + '/tmp/screenshot.png';
     await screenshot({ filename: file_path });
 
-    var base64 = fs.readFileSync(file_path).toString('base64');
-    res.json(base64)
+    // var base64 = fs.readFileSync(file_path).toString('base64');
+    // res.json(base64)
+    res.json(true);
+
     // var command = `DISPLAY=:0 scrot ${file_path} -o`;
     // // `scrot ${file_path} -o --display=:0`
     // console.log('scrot command:', command)
