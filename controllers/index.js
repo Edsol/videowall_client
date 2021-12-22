@@ -266,8 +266,10 @@ exports.closeBrowser = async (req, res) => {
 
 exports.getScreenshot = async (req, res) => {
     file_path = __basedir + '/tmp/screenshot.png';
-    console.log('scrot command:', `scrot ${file_path} -o --display=:0`, file_path)
-    exec(`scrot ${file_path} -o --display=:0`, (error, stdout, stderr) => {
+    var command = `DISPLAY=:0 scrot ${file_path} -o`;
+    // `scrot ${file_path} -o --display=:0`
+    console.log('scrot command:', command)
+    exec(command, (error, stdout, stderr) => {
         console.log('inside scrot exec')
         if (error) {
             console.log(`error: ${error.message}`);
