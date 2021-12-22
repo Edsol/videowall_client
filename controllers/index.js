@@ -283,7 +283,7 @@ exports.getScreenshot = async (req, res) => {
 
 
     // var command = `DISPLAY=:0 scrot ${file_path} -o`;
-    var command = `DISPLAY=:0 import -silent crop 1920x1080+1920+0 -screen png:"/home/debian/videowall_client/../screenshot.png"`;
+    var command = `DISPLAY=:0 import -silent -window root -crop 1920x1080+1920+0 -screen png:"/home/debian/videowall_client/../screenshot.png"`;
     // `scrot ${file_path} -o --display=:0`
     console.log('scrot command:', command)
     exec(command, (error, stdout, stderr) => {
