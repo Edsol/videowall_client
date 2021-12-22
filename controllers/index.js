@@ -268,7 +268,10 @@ exports.getScreenshot = async (req, res) => {
     const screenshot = require('screenshot-desktop')
 
     file_path = __basedir + '/../screenshot.png';
-    var options = { filename: file_path };
+    var options = {
+        screen: 1,
+        filename: file_path
+    };
     console.log('list displays', await screenshot.listDisplays())
     console.log('screenshot options', options)
     screenshot(options);
