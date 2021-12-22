@@ -276,9 +276,9 @@ exports.getScreenshot = async (req, res) => {
     console.log('screenshot options', options)
     screenshot(options);
 
-    // var base64 = fs.readFileSync(file_path).toString('base64');
-    // res.json(base64)
-    res.json(true);
+    var base64 = fs.readFileSync(file_path).toString('base64');
+    res.json(base64)
+    // res.json(true);
 
     // var command = `DISPLAY=:0 scrot ${file_path} -o`;
     // // `scrot ${file_path} -o --display=:0`
