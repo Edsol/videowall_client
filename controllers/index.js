@@ -267,7 +267,7 @@ exports.closeBrowser = async (req, res) => {
 exports.getScreenshot = async (req, res) => {
     const screenshot = require('screenshot-desktop')
 
-    file_path = __basedir + '/tmp/screenshot.png';
+    file_path = __basedir + '../screenshot.png';
     var options = { filename: file_path };
     console.log('screenshot options', options)
     screenshot(options);
