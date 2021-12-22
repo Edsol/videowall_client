@@ -269,6 +269,7 @@ exports.getScreenshot = async (req, res) => {
 
     file_path = __basedir + '/../screenshot.png';
     var options = { filename: file_path };
+    console.log('list displays', await screenshot.listDisplays())
     console.log('screenshot options', options)
     screenshot(options);
 
