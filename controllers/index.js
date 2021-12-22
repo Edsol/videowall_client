@@ -294,10 +294,9 @@ exports.getScreenshot = async (req, res) => {
         }
 
         console.log('upload image in base64 format')
-        // var base64 = fs.readFileSync(file_path).toString('base64');
-        // res.json(base64)
+        var base64 = fs.readFileSync(file_path).toString('base64');
+        res.json(base64)
     });
-    res.json(false);
 }
 
 exports.rebootDevice = async (req, res) => {
