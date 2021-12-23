@@ -310,13 +310,14 @@ exports.rebootDevice = async (req, res) => {
 }
 
 exports.reload = async (req, res) => {
-    exec(`sudo git stash && sudo git pull && pm2 reload all`, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            res.json(error.message);
-        }
-        res.json(true);
-    })
+    // exec(`pm2 reload all`, (error, stdout, stderr) => {
+    //     if (error) {
+    //         console.log(`error: ${error.message}`);
+    //         res.json(error.message);
+    //     }
+    //     res.json(true);
+    // })
+    res.json('not implemented');
 }
 
 exports.setOsd = async (req, res) => {
