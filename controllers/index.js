@@ -149,7 +149,7 @@ exports.openUrl = async (req, res) => {
     }
 
     console.log('displayObj', displayObj)
-    console.log('displayId', displayId);
+    console.log('Open url', url)
     var userDataDir = `/home/powering/.config/chromium/Default${displayId}`;
 
     var pid = null;
@@ -301,6 +301,16 @@ exports.getScreenshot = async (req, res) => {
 
 exports.rebootDevice = async (req, res) => {
     exec(`sudo reboot now`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json(error.message);
+        }
+        res.json(true);
+    })
+}
+
+exports.reload = async (req, res) => {
+    exec(`sudo git stash && sudo git pull && pm2 reload all`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json(error.message);
