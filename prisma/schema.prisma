@@ -7,6 +7,16 @@ datasource db {
   url      = "file:../database.db"
 }
 
+model config {
+  id      Int      @id @default(autoincrement())
+  title   String   @unique
+  type    String
+  string  String?
+  boolean Boolean?
+  number  Decimal?
+  json    String?
+}
+
 model display {
   id       Int     @id @default(autoincrement())
   port     String  @unique

@@ -1,1 +1,14 @@
-{"statusNotifier":{"enable":false,"timing":300},"chromiumCommand":"chromium","chromiumParams":"--display=:0 --kiosk --disable-inforbars","ip":"192.168.1.188","mac":"30:9c:23:a2:0b:ae","hostname":"debian-edoardo\n","display":{"1":{"port":"HDMI-1","primary":false,"size":{"width":null,"height":null}},"2":{"port":"HDMI-2","primary":false,"size":{"width":1920,"height":1080}}},"lastUrl":"bing.com"}
+{
+  "statusNotifier": {
+    "enable": false,
+    "timing": 300
+  },
+  "chromiumCommand": "chromium",
+  "browserParams": [
+    "--display=:0",
+    "--kiosk",
+    "--disable-features=Translate",
+    "--disable-gpu",
+    "--no-sandbox"
+  ]
+}

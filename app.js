@@ -31,36 +31,59 @@ app.use('/axios', express.static(__dirname + '/node_modules/axios/dist'))
 var configController = require('./controllers/config');
 var index_controller = require('./controllers/index');
 
-global.config = configController.getConfig();
-
-//if no hostname has been set, sets it in the configuration
-if (global.config.hostname === undefined) {
-  index_controller.getDeviceHostname((hostname) => {
-    configController.save('hostname', hostname)
-  });
-}
-
-// //if no ip address has been set, sets it in the configuration
-if (global.config.ip === undefined) {
-  configController.save('ip', index_controller.getIpAddress())
-}
-
-if (global.config.mac === undefined) {
-  configController.save('mac', index_controller.getMacAddress())
-}
-
 const displayModel = require('./models/display');
 const display = new displayModel();
+
+const configModel = require('./models/config');
+const config = new configModel();
+
+const fileConfig = configController.getConfig();
 
 (async () => {
   var displayList = await display.getList();
   if (displayList.length === 0) {
     await display.storeInfo()
   }
+
+  var db_config = await config.getAll();
+  global.config = db_config;
+  global.fileConfig = fileConfig;
+
+  if (db_config.ip === undefined) {
+    config.insert({
+      title: 'ip',
+      type: 'string',
+      string: await index_controller.getIpAddress()
+    });
+  }
+
+  if (db_config.mac === undefined) {
+    config.insert({
+      title: 'mac',
+      type: 'string',
+      string: await index_controller.getMacAddress()
+    });
+  }
+
+  if (db_config.hostname === undefined) {
+    index_controller.getDeviceHostname((hostname) => {
+      config.insert({
+        title: 'hostname',
+        type: 'string',
+        string: hostname
+      });
+    });
+  }
+
+  if (db_config.browserParams === undefined) {
+    config.insert({
+      title: 'browserParams',
+      type: 'json',
+      json: JSON.stringify(fileConfig.browserParams)
+    });
+  }
+
 })();
-
-global.config = configController.getConfig();
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

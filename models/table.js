@@ -5,6 +5,7 @@ class Table {
     constructor() { }
 
     async create(args) {
+        console.log('args', args)
         return await prisma[this.tableName].create(args)
     }
 

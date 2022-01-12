@@ -6,6 +6,10 @@ const configController = require('../controllers/config');
 
 const displayModel = require('../models/display');
 const display = new displayModel();
+
+const configModel = require('../models/config');
+const config = new configModel();
+
 const tools = require('../helper/tools');
 
 global.config = configController.getConfig;
@@ -14,8 +18,8 @@ exports.index = async (req, res) => {
     var displayList = await display.getList();
 
     res.render('index', {
-        title: 'PiClient: ' + (config.hostname || '-----'),
-        hostname: config.hostname,
+        title: global.config.hostname,
+        hostname: global.config.hostname,
         displays: displayList
     });
 }
@@ -31,10 +35,7 @@ exports.status = async (req, res) => {
  * GET hostname of device
  */
 exports.getHostname = async (req, res) => {
-    // if (!global.config.hostname) {
-    //     global.configStorage.saveSync('hostname', os.hostname());
-    // }
-    res.json(config.hostname)
+    res.json(await config.getByTitle('hostname', true))
 }
 
 exports.getDeviceHostname = (callback) => {
@@ -56,7 +57,7 @@ exports.getMacAddress = () => {
 }
 
 exports.getConfig = async (req, res) => {
-    res.json(configController.getConfig())
+    res.json(await config.getAll())
 }
 
 exports.setConfig = (req, res) => {
@@ -88,21 +89,15 @@ exports.runCommand = async (req, res) => {
  * SET hostname of device
  */
 exports.setHostname = async (req, res) => {
-    var hostname = req.params.hostname;
+    var hostname = req.params.hostname.replace(/\s+/g, '').trim();
     if (req.params.hostname === '') {
         res.json(false);
     }
 
-    configController.replace('hostname', hostname)
+    console.log(hostname)
+    config.replace('hostname', hostname);
 
-    var response = { executed: true, errors: null };
-    // exec(`sudo hostnamectl set-hostname ` + hostname, (error, stdout, stderr) => {
-    //     if (error) {
-    //         response.executed = false;
-    //         response.errors = error.message;
-    //     }
-    // });
-    res.json(response);
+    res.json({ executed: true, errors: null });
 }
 
 /**
@@ -112,17 +107,7 @@ exports.openUrl = async (req, res) => {
     var url = req.body.url;
     var displayId = req.body.display;
 
-    var chromeFlags = [
-        "--display=:0",
-        '--kiosk',
-        "--disable-features=Translate",
-        // "--headless",
-        "--disable-gpu",
-        "--no-sandbox"
-        // `--window-position=${displayObj.left},${displayObj.top}`,
-        // "--profile-directory=Default" + displayId,
-
-    ];
+    var chromeFlags = await config.getByTitle('browserParams');
 
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
@@ -148,11 +133,7 @@ exports.openUrl = async (req, res) => {
         }
     }
 
-    console.log('displayObj', displayObj)
-    console.log('Open url', url)
     var userDataDir = `/home/powering/.config/chromium/Default${displayId}`;
-
-    var pid = null;
 
     if (req.params.chromeLauncher === true) {
         var pid = await chromeLauncher(url, chromeFlags, userDataDir);
