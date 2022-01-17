@@ -18,12 +18,23 @@ model config {
 }
 
 model display {
-  id       Int     @id @default(autoincrement())
-  port     String  @unique
-  primary  Boolean @default(false)
-  width    Int?
-  height   Int?
-  left     Int
-  top      Int
-  position String
+  id           Int          @id @default(autoincrement())
+  port         String       @unique
+  primary      Boolean      @default(false)
+  width        Int?
+  height       Int?
+  left         Int
+  top          Int
+  position     String
+  urlHistories urlHistory[]
+}
+
+model urlHistory {
+  id        Int      @id @default(autoincrement())
+  datetime  DateTime @default(now())
+  url       String
+  display   display  @relation(fields: [displayId], references: [id])
+  displayId Int
+  pid       Int
+  closed    Boolean  @default(false)
 }

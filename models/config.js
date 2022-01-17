@@ -4,7 +4,9 @@ class Config extends Table {
     tableName = 'config';
 
     async parse(data) {
-        if (data.id) {
+        if (!data)
+            return data;
+        if (data.id !== undefined) {
             switch (data.type) {
                 case 'string':
                     return data.string

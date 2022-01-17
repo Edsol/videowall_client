@@ -10,6 +10,9 @@ const display = new displayModel();
 const configModel = require('../models/config');
 const config = new configModel();
 
+const urlHistoryModel = require('../models/urlHistory');
+const urlHistory = new urlHistoryModel();
+
 const tools = require('../helper/tools');
 
 global.config = configController.getConfig;
@@ -107,7 +110,7 @@ exports.openUrl = async (req, res) => {
     var url = req.body.url;
     var displayId = req.body.display;
 
-    var chromeFlags = await config.getByTitle('browserParams');
+    var chromeFlags = await config.getByTitle('browserParams', true);
 
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
@@ -137,10 +140,23 @@ exports.openUrl = async (req, res) => {
 
     if (req.params.chromeLauncher === true) {
         var pid = await chromeLauncher(url, chromeFlags, userDataDir);
-        console.log('pid', pid)
+        console.log('chromeLauncher', url, displayId, pid)
+        urlHistory.insert({
+            url: url,
+            pid: pid,
+            displayId: displayId,
+            closed: false
+        });
         res.json({ executed: true, pid: pid })
     } else if (req.params.chromeLauncher === false || req.params.chromeLauncher === undefined) {
         var pid = await browserLauncher(url, chromeFlags, userDataDir, true);
+        console.log('browserLauncher', url, displayId, pid)
+        urlHistory.insert({
+            url: url,
+            pid: pid,
+            displayId: displayId,
+            closed: false
+        });
         res.json({ executed: true, pid: pid })
     } else {
         res.json({ executed: false, pid: null })
@@ -164,6 +180,7 @@ async function chromeLauncher(url, chromeFlags, userDataDir) {
     }).then(chrome => {
         console.log(`chrome`, chrome)
         console.log(`Chrome debugging port running on ${chrome.port}`);
+
         res.json({ executed: true, pid: chrome.pid })
     })
 }
@@ -173,7 +190,6 @@ async function browserLauncher(url, chromeFlags, userDataDir, detach = true) {
     const launcher = require('@httptoolkit/browser-launcher');
     browserCommand = config.chromiumCommand || 'chromium';
 
-
     var browserOptions = {
         browser: browserCommand,
         detached: true,
@@ -181,8 +197,6 @@ async function browserLauncher(url, chromeFlags, userDataDir, detach = true) {
         options: chromeFlags,
         profile: userDataDir
     };
-
-    console.log('browserOptions', browserOptions)
 
     return new Promise((resolve, reject) => {
         launcher(async function (err, launch) {
@@ -203,7 +217,8 @@ async function browserLauncher(url, chromeFlags, userDataDir, detach = true) {
                     console.log('Instance started with PID:', instance.pid);
 
                     instance.on('stop', function (code) {
-                        console.log('Instance stopped with exit code:', code);
+                        urlHistory.setClosedByPid(instance.pid, true);
+                        console.log(`Instance (PID ${instance.pid}) stopped`);
                     });
 
                     resolve(instance.pid);

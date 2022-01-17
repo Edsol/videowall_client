@@ -5,7 +5,7 @@ class Table {
     constructor() { }
 
     async create(args) {
-        console.log('args', args)
+        console.log('create', args)
         return await prisma[this.tableName].create(args)
     }
 
@@ -48,9 +48,16 @@ class Table {
         })
     }
 
-    async deleteAll(where = {}, dataSet = {}) {
+    async deleteAll(where = {}) {
         return await prisma[this.tableName].deleteMany({
             where: where,
+        })
+    }
+
+    async update(where = {}, dataSet = {}) {
+        return await prisma[this.tableName].updateMany({
+            where: where,
+            data: dataSet
         })
     }
 }
