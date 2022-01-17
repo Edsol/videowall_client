@@ -75,12 +75,8 @@ const fileConfig = configController.getConfig();
     });
   }
 
-  if (db_config.browserParams === undefined) {
-    config.insert({
-      title: 'browserParams',
-      type: 'json',
-      json: JSON.stringify(fileConfig.browserParams)
-    });
+  if (db_config.configfileLoaded === undefined || await config.getByTitle('configfileLoaded', true) === false) {
+    config.loadConfigInDatabase(fileConfig);
   }
 
 })();
