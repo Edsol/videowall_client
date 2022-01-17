@@ -1,8 +1,5 @@
 {
-  "statusNotifier": {
-    "enable": false,
-    "timing": 300
-  },
+  "restoreAfterShutdown": true,
   "chromiumCommand": "chromium",
   "browserParams": [
     "--display=:0",
