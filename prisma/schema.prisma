@@ -30,11 +30,13 @@ model display {
 }
 
 model urlHistory {
-  id        Int      @id @default(autoincrement())
-  datetime  DateTime @default(now())
-  url       String
-  display   display  @relation(fields: [displayId], references: [id])
-  displayId Int
-  pid       Int
-  closed    Boolean  @default(false)
+  id            Int      @id @default(autoincrement())
+  datetime      DateTime @default(now())
+  url           String
+  display       display  @relation(fields: [displayId], references: [id])
+  displayId     Int
+  pid           Int
+  closed        Boolean  @default(false)
+  userDataDir   String?
+  browserParams String?
 }
