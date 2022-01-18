@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
 
 var app = express();
@@ -18,7 +19,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', apiRouter);
+app.use('/frontend', indexRouter);
+app.use('/api', apiRouter);
 
 global.__basedir = __dirname;
 
@@ -116,5 +118,4 @@ app.use(function (err, req, res) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;
