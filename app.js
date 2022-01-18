@@ -91,9 +91,11 @@ const fileConfig = configController.getConfig();
           displayId: displayObject.id
         });
 
-        if (lastUrlHistory.closed === false) {
-          console.log('Reload browser istance for Display', lastUrlHistory.port)
-          display.reload(lastUrlHistory);
+        if (lastUrlHistory !== null) {
+          if (lastUrlHistory.closed === false) {
+            console.log('Reload browser istance for Display', lastUrlHistory.port)
+            display.reload(lastUrlHistory);
+          }
         }
       }
     }

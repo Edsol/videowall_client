@@ -86,16 +86,13 @@ class Config extends Table {
 
             } else {
                 var data = { title: fieldName };
-
-                fieldValueTypeof = typeof fieldValue;
-                data.type = fieldValueTypeof;
-
+                data.type = typeof fieldValue;
                 if (data.type === 'object') {
                     data.type = 'json';
                     fieldValue = JSON.stringify(fieldValue);
                 }
 
-                data[fieldValueTypeof] = fieldValue;
+                data[data.type] = fieldValue;
 
                 this.insert(data);
             }
