@@ -37,6 +37,9 @@ const display = new displayModel();
 const configModel = require('./models/config');
 const config = new configModel();
 
+const urlHistoryModel = require('./models/urlHistory');
+const urlHistory = new urlHistoryModel();
+
 const fileConfig = configController.getConfig();
 
 (async () => {
@@ -77,6 +80,23 @@ const fileConfig = configController.getConfig();
 
   if (db_config.configfileLoaded === undefined || await config.getByTitle('configfileLoaded', true) === false) {
     config.loadConfigInDatabase(fileConfig);
+  }
+
+  if (db_config.restoreAfterShutdown) {
+    var displayList = await display.getList();
+
+    if (displayList.length > 0) {
+      for (var displayObject of displayList) {
+        var lastUrlHistory = await urlHistory.getLast({
+          displayId: displayObject.id
+        });
+
+        if (lastUrlHistory.closed === false) {
+          console.log('Reload browser istance for Display', lastUrlHistory.port)
+          display.reload(lastUrlHistory);
+        }
+      }
+    }
   }
 
 })();
