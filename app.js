@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
+var apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/', apiRouter);
 
 global.__basedir = __dirname;
 
@@ -29,7 +29,7 @@ app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/j
 app.use('/axios', express.static(__dirname + '/node_modules/axios/dist'))
 
 var configController = require('./controllers/config');
-var index_controller = require('./controllers/index');
+var api = require('./controllers/api');
 
 const displayModel = require('./models/display');
 const display = new displayModel();
@@ -56,7 +56,7 @@ const fileConfig = configController.getConfig();
     config.insert({
       title: 'ip',
       type: 'string',
-      string: await index_controller.getIpAddress()
+      string: await api.getIpAddress()
     });
   }
 
@@ -64,12 +64,12 @@ const fileConfig = configController.getConfig();
     config.insert({
       title: 'mac',
       type: 'string',
-      string: await index_controller.getMacAddress()
+      string: await api.getMacAddress()
     });
   }
 
   if (db_config.hostname === undefined) {
-    index_controller.getDeviceHostname((hostname) => {
+    api.getDeviceHostname((hostname) => {
       config.insert({
         title: 'hostname',
         type: 'string',
