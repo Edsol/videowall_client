@@ -28,7 +28,8 @@
     "morgan": "~1.9.1",
     "node-nmap": "^4.0.0",
     "screenshot-desktop": "^1.12.7",
-    "vue": "^2.6.11"
+    "vue": "^3",
+    "vue-toast-notification": "^3.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

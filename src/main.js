@@ -1,12 +1,15 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
+import VueToast from 'vue-toast-notification';
+
 import 'bootstrap/dist/css/bootstrap.css';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
-Vue.config.productionTip = false
 
-Vue.prototype.backendUrl = 'http://localhost:3000/frontend/';
+const app = createApp(App)
 
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+app.config.globalProperties.backendUrl = 'http://localhost:3000/frontend/';
+
+app.use(VueToast);
+app.mount('#app')

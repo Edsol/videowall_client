@@ -42,13 +42,19 @@ export default {
       .then((response) =>{
         if(response.data){
           this.items = [];
+          this.$toast.open({
+              message: "Url list has been cleaned",
+              type: "success",
+              duration: 5000,
+              dismissible: true
+          })
         }
-        // alert(response.data)
       })
     }
   },
   created:function(){
     backendUrl = this.backendUrl;
+
     axios.get(backendUrl + 'urlHistorylist/10')
     .then((response) =>{
       this.items = response.data;
