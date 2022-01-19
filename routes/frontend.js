@@ -1,9 +1,24 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', (req, res) => {
-    console.log('AAA')
-    res.json(true);
+const displayModel = require('../models/display');
+const display = new displayModel();
+
+const urlHistoryModel = require('../models/urlHistory');
+const urlHistory = new urlHistoryModel();
+
+router.get('/urlHistorylist/:limit', async (req, res) => {
+    var list = await urlHistory.prisma.urlHistory.findMany({
+        take: parseInt(req.params.limit),
+        orderBy: {
+            id: 'desc'
+        },
+        include: {
+            display: true
+        }
+    })
+
+    res.json(list)
 });
 
 module.exports = router;
