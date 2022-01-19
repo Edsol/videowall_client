@@ -1,26 +1,17 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <UrlList/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-import * as axios from 'axios';
+import UrlList from './components/UrlList.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    UrlList
   },
-  created:function(){
-    axios.get('http://localhost:3000/frontend')
-    .then((response) =>{
-      console.log(response)
-    })
-  }
 }
 </script>
 
