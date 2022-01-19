@@ -21,4 +21,8 @@ router.get('/urlHistorylist/:limit', async (req, res) => {
     res.json(list)
 });
 
+router.get('/clearHistoryList', async (req, res) => {
+    res.json(true);
+});
+
 module.exports = router;
