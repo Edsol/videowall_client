@@ -295,3 +295,15 @@ exports.reloadDisplays = async (req, res) => {
     // console.log('stored display info')
     res.json(true);
 }
+
+exports.loadUpdate = async (req, res) => {
+    console.log('loadUpdate')
+    exec(`git pull`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json({ execute: false, error: error.message });
+        } else {
+            res.json({ execute: true, error: null })
+        }
+    })
+}

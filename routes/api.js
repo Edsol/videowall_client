@@ -19,6 +19,7 @@ router.get('/getConfig', api.getConfig)
 router.post('/setConfig', api.setConfig)
 router.post('/runCommand', api.runCommand)
 router.get('/reloadDisplays', api.reloadDisplays)
+router.get('/loadUpdate', api.loadUpdate)
 
 router.get('/getMonitorsInfo', api.getMonitorsInfo)
 router.get('/storeMonitorsInfo', api.storeMonitorsInfo)
