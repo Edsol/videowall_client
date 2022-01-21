@@ -4,21 +4,25 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
+var frontendRouter = require('./routes/frontend');
+var apiRouter = require('./routes/api');
 
+var cors = require('cors');
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/frontend', frontendRouter);
+app.use('/api', apiRouter);
 
 global.__basedir = __dirname;
 
@@ -29,7 +33,7 @@ app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/j
 app.use('/axios', express.static(__dirname + '/node_modules/axios/dist'))
 
 var configController = require('./controllers/config');
-var index_controller = require('./controllers/index');
+var api = require('./controllers/api');
 
 const displayModel = require('./models/display');
 const display = new displayModel();
@@ -56,7 +60,7 @@ const fileConfig = configController.getConfig();
     config.insert({
       title: 'ip',
       type: 'string',
-      string: await index_controller.getIpAddress()
+      string: await api.getIpAddress()
     });
   }
 
@@ -64,12 +68,12 @@ const fileConfig = configController.getConfig();
     config.insert({
       title: 'mac',
       type: 'string',
-      string: await index_controller.getMacAddress()
+      string: await api.getMacAddress()
     });
   }
 
   if (db_config.hostname === undefined) {
-    index_controller.getDeviceHostname((hostname) => {
+    api.getDeviceHostname((hostname) => {
       config.insert({
         title: 'hostname',
         type: 'string',
@@ -83,7 +87,7 @@ const fileConfig = configController.getConfig();
   }
 
   if (db_config.restoreAfterShutdown) {
-    var displayList = await display.getList();
+    displayList = await display.getList();
 
     if (displayList.length > 0) {
       for (var displayObject of displayList) {
@@ -109,7 +113,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -118,5 +122,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;

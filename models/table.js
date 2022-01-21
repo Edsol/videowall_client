@@ -54,9 +54,13 @@ class Table {
         })
     }
 
-    async deleteAll(where = {}) {
+    async deleteAll() {
+        return await prisma[this.tableName].deleteMany({})
+    }
+
+    async deleteMultiple(where = {}) {
         return await prisma[this.tableName].deleteMany({
-            where: where,
+            where: where
         })
     }
 
