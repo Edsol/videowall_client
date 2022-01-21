@@ -26,6 +26,7 @@ sudo apt update
 sudo apt-get install nodejs npm -y
 
 sudo npm i -g pm2
+sudo npm i -g http-server nodemon concurrently
 # npm install @prisma/client
 npm install
 
