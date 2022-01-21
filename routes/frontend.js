@@ -26,7 +26,7 @@ router.get('/clearHistoryList', async (req, res) => {
 });
 
 router.get('/removeUrl/:id', async (req, res) => {
-    var response = await urlHistory.deleteAll({
+    var response = await urlHistory.deleteMultiple({
         id: parseInt(req.params.id)
     })
     console.log('response', response)

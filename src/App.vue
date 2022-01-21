@@ -16,6 +16,9 @@ import UrlLoader from "./components/UrlLoader.vue";
 
 export default {
   name: "App",
+  created(){
+    document.title = "Videowall client";
+  },
   components: {
     Navbar,
     UrlList,

@@ -15,13 +15,14 @@ const tools = require('../helper/tools');
 global.config = configController.getConfig;
 
 exports.index = async (req, res) => {
-    var displayList = await display.getList();
+    // var displayList = await display.getList();
 
-    res.render('index', {
-        title: global.config.hostname,
-        hostname: global.config.hostname,
-        displays: displayList
-    });
+    // res.render('index', {
+    //     title: global.config.hostname,
+    //     hostname: global.config.hostname,
+    //     displays: displayList
+    // });
+    // res.render('../dist/index')
 }
 
 /**

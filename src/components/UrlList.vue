@@ -14,13 +14,12 @@
       <tbody>
         <tr v-for="item in items" :key="item.id">
           <td>{{formatDatetime(item.datetime)}}</td>
-          <td>
-            <a :href="item.url" target="_blank">{{item.url}}</a>
-          </td>
+          <td>{{item.url}}</td>
           <td>{{item.display.port}}</td>
           <td>
             <font-awesome-icon icon="times-circle" v-if="item.close === false" class="text-danger"/>
             <font-awesome-icon icon="trash-alt" class="text-danger cursor-pointer" v-on:click="removeUrl(item.id)" title="delete url"/>
+            <font-awesome-icon icon="retweet" class="cursor-pointer" v-on:click="useLink(item.id)" title="use this URL"/>
           </td>
         </tr>
       </tbody>
@@ -88,6 +87,10 @@ export default {
           this.loadUrlHistories()
         }
       })
+    },
+    useLink(urlId){
+      var item = this.items.find(element => element.id === urlId);
+      this.emitter.emit('updateUrl-event',{url:item.url})
     }
   }
 }

@@ -11,8 +11,8 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPhone, faTrashAlt, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-library.add(faPhone, faTrashAlt, faTimesCircle);
+import { faPhone, faTrashAlt, faTimesCircle, faRetweet } from "@fortawesome/free-solid-svg-icons";
+library.add(faPhone, faTrashAlt, faTimesCircle, faRetweet);
 
 const emitter = mitt();
 const app = createApp(App)

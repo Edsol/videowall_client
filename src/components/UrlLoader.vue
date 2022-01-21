@@ -16,6 +16,7 @@
     <div class="col-2">
       <label for="display">Display</label>
       <select name="display" id="display" class="form-select" v-model="selectedDisplay" required>
+        <option disabled value="">Please select one</option>
         <option v-for="display in displays" :key="display.id">
           {{ display.port }}
         </option>
@@ -37,11 +38,17 @@ export default {
   data: function () {
     return {
       displays: [],
+      url: null,
+      selectedDisplay: null
     };
   },
   created: function () {
     backendUrl = this.backendUrl;
     apiUrl = this.apiUrl;
+
+    this.emitter.on('updateUrl-event', (evt) =>{
+      this.url = evt.url;
+    })
   },
   mounted: function(){
     this.$nextTick(this.loadDisplayList)
@@ -69,19 +76,22 @@ export default {
               duration: 5000,
               dismissible: true
           })
-          this.emitter.emit('reloadUrlHistories-event',{
-            eventContent:'TEST'
-          })
+          this.emitter.emit('reloadUrlHistories-event')
+
+          this.url = null;
         } else {
           console.log(response.data.errors)
         }
       })
     },
     checkForm(e){
+      console.log('Open url',this.url)
       e.preventDefault();
       var selectedDisplayObj = displays.find(element => element.port === this.selectedDisplay)
-      
+
       this.openUrl(this.url, selectedDisplayObj.id)
+      this.selectedDisplay = null;
+      this.url = null;
     }
   },
 };
