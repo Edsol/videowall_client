@@ -1,8 +1,11 @@
 {
-  "statusNotifier": {
-    "enable": false,
-    "timing": 300
-  },
+  "restoreAfterShutdown": true,
   "chromiumCommand": "chromium",
-  "chromiumParams": "--display=:0 --kiosk --disable-inforbars"
+  "browserParams": [
+    "--display=:0",
+    "--kiosk",
+    "--disable-features=Translate",
+    "--disable-gpu",
+    "--no-sandbox"
+  ]
 }

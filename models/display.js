@@ -1,6 +1,13 @@
 const Table = require('./table');
+const os = require("os");
 const tools = require('../helper/tools');
 var xrandrParse = require('../libs/xrandrParser');
+
+const configModel = require('../models/config');
+const config = new configModel();
+
+const urlHistoryModel = require('../models/urlHistory');
+const urlHistory = new urlHistoryModel();
 
 class Display extends Table {
 	tableName = 'display';
@@ -137,6 +144,77 @@ class Display extends Table {
 		console.log('execute ' + `xrandr --output ${first_display.port} ${xrand_command} ${second_display.port}`)
 		await tools.exec(`DISPLAY=:0 xrandr --output ${first_display.port} ${xrand_command} ${second_display.port}`);
 		return true;
+	}
+
+	async openBrowser(displayId, url) {
+		var browserParams = await config.getByTitle('browserParams', true);
+		var displayObj = await this.get(displayId);
+
+		browserParams.push("--profile-directory=Default" + displayId);
+		browserParams.push(`--window-position=${displayObj.left},${displayObj.top}`);
+
+		const userInfo = os.userInfo();
+
+		var userDataDir = userInfo.homedir + "/.config/chromium/Default" + displayId;
+
+		var pid = await this.browserLauncher(url, browserParams, userDataDir)
+
+		console.log(`Browser start for Display ${displayId} with PID`, pid);
+
+		await urlHistory.insert({
+			url: url,
+			pid: pid,
+			displayId: displayId,
+			closed: false,
+			userDataDir: userDataDir,
+			browserParams: JSON.stringify(browserParams)
+		});
+
+		return pid;
+	}
+
+
+	async browserLauncher(url, browserParams, userDataDir, detach = true) {
+		console.log('url launched with browserLauncher', browserParams)
+		const launcher = require('@httptoolkit/browser-launcher');
+
+		var browserCommand = await config.getByTitle('chromiumCommand', true) || 'chromium';
+
+		var browserOptions = {
+			browser: browserCommand,
+			detached: true,
+			options: browserParams,
+			profile: userDataDir
+		};
+
+		return new Promise((resolve, reject) => {
+			launcher(async function (err, launch) {
+				launch(url, browserOptions, async function (err, instance) {
+					if (err) {
+						reject(err);
+					}
+
+					if (detach === true) {
+						instance.process.unref();
+						instance.process.stdin.unref();
+						instance.process.stdout.unref();
+						instance.process.stderr.unref();
+					}
+
+					instance.on('stop', function (code) {
+						urlHistory.setClosedByPid(instance.pid, true);
+						console.log(`Browser instance (PID ${instance.pid}) stopped`);
+					});
+
+					resolve(instance.pid);
+				}
+				);
+			});
+		})
+	}
+
+	async reload(urlHistory) {
+		return await this.openBrowser(urlHistory.displayId, urlHistory.url);
 	}
 }
 
