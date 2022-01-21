@@ -197,7 +197,7 @@ exports.getScreenshot = async (req, res) => {
 }
 
 exports.rebootDevice = async (req, res) => {
-    exec(`sudo reboot now`, (error, stdout, stderr) => {
+    exec(`/sbin/shutdown -r now`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json(error.message);
@@ -207,14 +207,16 @@ exports.rebootDevice = async (req, res) => {
 }
 
 exports.reload = async (req, res) => {
-    // exec(`pm2 reload all`, (error, stdout, stderr) => {
-    //     if (error) {
-    //         console.log(`error: ${error.message}`);
-    //         res.json(error.message);
-    //     }
-    //     res.json(true);
-    // })
-    res.json('not implemented');
+    console.log('reload pm2')
+    exec(`pm2 reload all`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json({ execute: false, error: error.message });
+        } else {
+            res.json({ execute: true, error: null })
+        }
+        // res.json(true);
+    })
 }
 
 exports.setOsd = async (req, res) => {
@@ -240,7 +242,7 @@ exports.storeMonitorsInfo = async (req, res) => {
 }
 
 exports.deleteStoredMonitorsInfo = async (req, res) => {
-    res.json(await display.deleteAll({}));
+    res.json(await display.deleteAll());
 }
 
 exports.getMonitors = async (req, res) => {
@@ -287,9 +289,9 @@ exports.setPlace = async (req, res) => {
 }
 
 exports.reloadDisplays = async (req, res) => {
-    var countDeleted = await display.deleteAll({});
-    console.log('delete all display', countDeleted);
-    await display.storeInfo();
-    console.log('stored display info')
+    // var countDeleted = await display.deleteAll();
+    // console.log('delete all display', countDeleted);
+    // await display.storeInfo();
+    // console.log('stored display info')
     res.json(true);
 }

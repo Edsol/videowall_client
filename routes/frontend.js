@@ -25,4 +25,18 @@ router.get('/clearHistoryList', async (req, res) => {
     res.json(true);
 });
 
+router.get('/removeUrl/:id', async (req, res) => {
+    var response = await urlHistory.deleteAll({
+        id: parseInt(req.params.id)
+    })
+    console.log('response', response)
+    res.json(response)
+})
+
+router.get('/getDisplayList', async (req, res) => {
+    res.json(await display.getList());
+})
+
+
+
 module.exports = router;

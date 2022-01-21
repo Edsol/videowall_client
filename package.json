@@ -9,6 +9,10 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@httptoolkit/browser-launcher": "^2.0.1",
     "@prisma/client": "^3.6.0",
     "axios": "^0.24.0",
@@ -25,10 +29,12 @@
     "ip": "^1.1.5",
     "jfs": "^0.3.0",
     "jquery": "^3.6.0",
+    "mitt": "^3.0.0",
     "morgan": "~1.9.1",
     "node-nmap": "^4.0.0",
     "screenshot-desktop": "^1.12.7",
     "vue": "^3",
+    "vue-select-3": "^1.0.1",
     "vue-toast-notification": "^3.0.0"
   },
   "devDependencies": {
@@ -53,7 +59,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",

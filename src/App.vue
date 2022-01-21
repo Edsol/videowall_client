@@ -1,19 +1,27 @@
 <template>
   <div id="app">
-    <hr>
-    <UrlList/>
+    <Navbar/>
+    <div class="wrapper">
+      <UrlLoader />
+      <hr class="mt-5 mb-5" />
+      <UrlList />
+    </div>
   </div>
 </template>
 
 <script>
-import UrlList from './components/UrlList.vue'
+import Navbar from './components/Navbar.vue';
+import UrlList from "./components/UrlList.vue";
+import UrlLoader from "./components/UrlLoader.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    UrlList
+    Navbar,
+    UrlList,
+    UrlLoader
   },
-}
+};
 </script>
 
 <style>
@@ -22,7 +30,11 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
-  padding:20px;
+}
+.wrapper{
+  padding: 10px;
+}
+.cursor-pointer{
+  cursor: pointer;
 }
 </style>
