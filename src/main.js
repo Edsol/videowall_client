@@ -17,15 +17,10 @@ library.add(faPhone, faTrashAlt, faTimesCircle, faRetweet);
 const emitter = mitt();
 const app = createApp(App)
 
-app.config.globalProperties.backendUrl = 'http://localhost:3000/frontend/';
-app.config.globalProperties.apiUrl = 'http://localhost:3000/api/';
+app.config.globalProperties.backendUrl = 'http://' + location.hostname + ':3000/frontend/';
+app.config.globalProperties.apiUrl = 'http://' + location.hostname + ':3000/api/';
 
-axios.get('http://localhost:3000/api/getConfig')
-    .then((response) => {
-        console.log('axios main', response.data)
-    })
-
-
+console.log('location', location.hostname)
 
 // var ipAddress = ip.address();
 // console.log('IP ADDRESS', ipAddress);
