@@ -20,21 +20,6 @@ const app = createApp(App)
 app.config.globalProperties.backendUrl = 'http://' + location.hostname + ':3000/frontend/';
 app.config.globalProperties.apiUrl = 'http://' + location.hostname + ':3000/api/';
 
-console.log('location', location.hostname)
-
-// var ipAddress = ip.address();
-// console.log('IP ADDRESS', ipAddress);
-
-// if (process.env.NODE_ENV !== "development") {
-//     var ipAddress = ip.address();
-// app.config.globalProperties.backendUrl = 'http://' + ipAddress + ':3000/frontend/';
-// app.config.globalProperties.apiUrl = 'http://' + ipAddress + ':3000/api/';
-//     console.log('PRODUCTION', 'http://' + ip + ':3000/frontend/', 'http://' + ip + ':3000/api/')
-// }
-
-
-
-
 app.config.globalProperties.emitter = emitter
 app.config.globalProperties.axios = axios
 

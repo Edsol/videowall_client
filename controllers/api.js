@@ -140,10 +140,10 @@ exports.closeBrowserByPid = async (req, res) => {
     exec(`kill ` + req.params.id, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json(error.message);
+            res.json({ execute: false, error: error.message });
+        } else {
+            res.json({ execute: true, error: null });
         }
-
-        res.json(true);
     })
 }
 
@@ -151,14 +151,15 @@ exports.closeBrowserByPid = async (req, res) => {
  * 
  */
 exports.closeBrowser = async (req, res) => {
-    browserCommand = config.chromiumCommand || 'chromium-browser';
+    browserCommand = await config.getByTitle('chromiumCommand', true) || 'chromium-browser';
+    console.log('browserCommand', browserCommand)
     exec(`killall ` + browserCommand, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json(error.message);
+            res.json({ execute: false, error: error.message });
+        } else {
+            res.json({ execute: true, error: null });
         }
-
-        res.json(true);
     })
 }
 
@@ -185,15 +186,17 @@ exports.getScreenshot = async (req, res) => {
     // `scrot ${file_path} -o --display=:0`
     console.log('scrot command:', command)
     exec(command, (error, stdout, stderr) => {
-        console.log('inside scrot exec')
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json(error.message);
+            res.json({ execute: false, error: error.message });
+        } else {
+            // res.json({ execute: true, error: null });
+            console.log('upload image in base64 format')
+            var base64 = fs.readFileSync(file_path).toString('base64');
+            res.json(base64)
         }
 
-        console.log('upload image in base64 format')
-        var base64 = fs.readFileSync(file_path).toString('base64');
-        res.json(base64)
+
     });
 }
 
@@ -201,9 +204,10 @@ exports.rebootDevice = async (req, res) => {
     exec(`/sbin/shutdown -r now`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json(error.message);
+            res.json({ execute: false, error: error.message });
+        } else {
+            res.json({ execute: true, error: null });
         }
-        res.json(true);
     })
 }
 
@@ -216,7 +220,6 @@ exports.reload = async (req, res) => {
         } else {
             res.json({ execute: true, error: null })
         }
-        // res.json(true);
     })
 }
 
@@ -224,13 +227,14 @@ exports.setOsd = async (req, res) => {
     var text = req.params.text;
     exec(`export DISPLAY=":0"`, (error, stdout, stderr) => {
         console.log(stdout)
-        exec(`DISPLAY=:0 echo ${text} | osd_cat -p top -A right -f -*-*-bold-*-*-*-150-60-*-*-*-*-*-* -d 3 -s 3`, (error, stdout, stderr) => {
+        exec(`DISPLAY=:0 echo ${text} | osd_cat -p top -A right -f -*-*-bold-*-*-*-150-60-*-*-*-*-*-* -d 3 -s 3 &`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
-                res.json(error.message);
+                res.json({ execute: false, error: error.message });
             }
-            res.json(true);
         })
+
+        return res.json(true);
     });
 }
 
