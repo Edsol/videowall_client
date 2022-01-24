@@ -225,17 +225,12 @@ exports.reload = async (req, res) => {
 
 exports.setOsd = async (req, res) => {
     var text = req.params.text;
-    exec(`export DISPLAY=":0"`, (error, stdout, stderr) => {
-        console.log(stdout)
-        exec(`DISPLAY=:0 echo ${text} | osd_cat -p top -A right -f -*-*-bold-*-*-*-150-60-*-*-*-*-*-* -d 3 -s 3 &`, (error, stdout, stderr) => {
-            if (error) {
-                console.log(`error: ${error.message}`);
-                res.json({ execute: false, error: error.message });
-            }
-        })
-
-        return res.json(true);
-    });
+    exec(`DISPLAY=:0 echo ${text} | osd_cat -p top -A right -f -*-*-bold-*-*-*-150-60-*-*-*-*-*-* -d 3 -s 3`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json({ execute: false, error: error.message });
+        }
+    })
 }
 
 exports.getMonitorsInfo = async (req, res) => {

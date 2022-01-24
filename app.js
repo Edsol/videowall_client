@@ -47,6 +47,9 @@ const urlHistory = new urlHistoryModel();
 const fileConfig = configController.getConfig();
 
 (async () => {
+  var exportDisplay = await configController.setDisplayExport();
+  console.log('exportDisplay', exportDisplay)
+
   var displayList = await display.getList();
   if (displayList.length === 0) {
     await display.storeInfo()
