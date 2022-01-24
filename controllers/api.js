@@ -211,6 +211,18 @@ exports.rebootDevice = async (req, res) => {
     })
 }
 
+exports.pull = async (req, res) => {
+    console.log('git pull')
+    exec(`git pull`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            res.json({ execute: false, error: error.message });
+        } else {
+            res.json({ execute: true, error: null })
+        }
+    })
+}
+
 exports.reload = async (req, res) => {
     console.log('reload pm2')
     exec(`pm2 reload all`, (error, stdout, stderr) => {
