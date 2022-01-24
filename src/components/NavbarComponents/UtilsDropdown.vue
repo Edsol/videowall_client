@@ -14,6 +14,7 @@
       <li><a class="dropdown-item" href="#" v-on:click="reloadService">Reload service</a></li>
       <li><a class="dropdown-item" href="#" v-on:click="reboot">Reboot device</a></li>
       <li><a class="dropdown-item" href="#" v-on:click="closeAllBrowser">Close all browser</a></li>
+      <li><a class="dropdown-item" href="#" v-on:click="identifyDevice">Identify device</a></li>
     </ul>
   </div>
 </template>
@@ -51,6 +52,10 @@ export default {
         closeAllBrowser(){
           console.log('closeAllBrowser')
           this.axios.get(this.apiUrl + 'closeBrowser')
+        },
+        identifyDevice(){
+          console.log('identifyDevice')
+          this.axios.get(this.apiUrl + 'osd/'+location.hostname)
         }
     }
 }

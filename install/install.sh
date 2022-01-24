@@ -4,7 +4,7 @@ sudo apt-get install --no-install-recommends xserver-xorg x11-xserver-utils open
 sudo apt-get install unclutter chromium openssl shellinabox -y
 sudo apt install thunar git htop curl psmisc vsftpd scrot xosd-bin conky jq -y
 sudo apt-get install firmware-linux-nonfree libgl1-mesa-dri xserver-xorg-video-ati -y
-
+sudo apt-get install xfsprogs xfstt -y
 
 # firefox-esr-l10n-it
 

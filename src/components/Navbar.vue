@@ -21,6 +21,9 @@
           <li class="nav-item dropdown">
             <UtilsDropdown/>
           </li>
+           <li class="nav-item dropdown">
+            <!-- <DisplayUtilsDropdown/> -->
+          </li>
         </ul>
       </div>
     </div>
@@ -29,11 +32,13 @@
 
 <script>
 import UtilsDropdown from './NavbarComponents/UtilsDropdown.vue';
+// import DisplayUtilsDropdown from './NavbarComponents/DisplayUtilsDropdown.vue';
 
 export default {
   name: "Navbar",
   components: {
-    UtilsDropdown
+    UtilsDropdown,
+    // DisplayUtilsDropdown
   },
 };
 </script>
