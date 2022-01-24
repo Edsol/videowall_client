@@ -225,7 +225,7 @@ exports.reload = async (req, res) => {
 
 exports.setOsd = async (req, res) => {
     var text = req.params.text;
-    exec(`echo ${text} | osd_cat -p top -A left -f -*-*-*-*-*-*-120-240-*-*-*-*-*-* -d 3 -s 3`, (error, stdout, stderr) => {
+    exec(`DISPLAY=:0 echo ${text} | osd_cat -p top -A left -f -*-*-*-*-*-*-120-240-*-*-*-*-*-* -d 3 -s 3`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({ execute: false, error: error.message });
