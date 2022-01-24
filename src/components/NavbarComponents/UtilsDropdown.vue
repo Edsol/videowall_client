@@ -13,6 +13,7 @@
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
       <li><a class="dropdown-item" href="#" v-on:click="reloadService">Reload service</a></li>
       <li><a class="dropdown-item" href="#" v-on:click="reboot">Reboot device</a></li>
+      <li><a class="dropdown-item" href="#" v-on:click="closeAllBrowser">Close all browser</a></li>
     </ul>
   </div>
 </template>
@@ -46,6 +47,10 @@ export default {
         reboot(){
             console.log('reboot')
             this.axios.get(this.apiUrl + 'reboot')
+        },
+        closeAllBrowser(){
+          console.log('closeAllBrowser')
+          this.axios.get(this.apiUrl + 'closeBrowser')
         }
     }
 }
