@@ -7,10 +7,11 @@ const configModel = require('../models/config');
 const config = new configModel();
 
 const urlHistoryModel = require('../models/urlHistory');
-const urlHistory = new urlHistoryModel();
 
 class Display extends Table {
 	tableName = 'display';
+
+	urlHistory = new urlHistoryModel();
 
 	async extractDisplayInfo() {
 		var monitorsList = await tools.exec('DISPLAY=:0 xrandr --current');
@@ -157,20 +158,24 @@ class Display extends Table {
 
 		var userDataDir = userInfo.homedir + "/.config/chromium/Default" + displayId;
 
-		var pid = await this.browserLauncher(url, browserParams, userDataDir)
+		// var pid = await this.browserLauncher(url, browserParams, userDataDir)
+		var chromeInstance = await this.chromeLauncher(url, browserParams, userDataDir);
+		// var targetId = chromeInstance.page._target._targetId;
+		console.log('chromeInstance', chromeInstance)
 
-		console.log(`Browser start for Display ${displayId} with PID`, pid);
+		console.log(`Browser start for Display ${displayId} with PID`, chromeInstance.pid);
 
-		await urlHistory.insert({
+		await this.urlHistory.insert({
 			url: url,
-			pid: pid,
+			pid: chromeInstance.pid,
+			port: chromeInstance.port,
 			displayId: displayId,
 			closed: false,
 			userDataDir: userDataDir,
 			browserParams: JSON.stringify(browserParams)
 		});
 
-		return pid;
+		return chromeInstance.pid;
 	}
 
 
@@ -202,13 +207,40 @@ class Display extends Table {
 					}
 
 					instance.on('stop', function (code) {
-						urlHistory.setClosedByPid(instance.pid, true);
+						this.urlHistory.setClosedByPid(instance.pid, true);
 						console.log(`Browser instance (PID ${instance.pid}) stopped`);
 					});
 
-					resolve(instance.pid);
+					resolve({
+						pid: instance.pid,
+						port: instance.port
+					});
 				}
 				);
+			});
+		})
+	}
+
+	async chromeLauncher(url, browserParams, userDataDir) {
+		console.log('chromeLauncher')
+		const ChromeLauncher = require('chrome-launcher');
+
+		return new Promise((resolve, reject) => {
+			ChromeLauncher.launch({
+				startingUrl: url,
+				chromeFlags: browserParams
+			}).then(async chrome => {
+				console.log(`Chrome debugging port running on ${chrome.port}`);
+
+				chrome.process.on('close', () => {
+					this.urlHistory.setClosedByPid(chrome.pid, true);
+					console.log(`Browser instance (PID ${chrome.pid}) stopped`);
+				})
+
+				resolve({
+					pid: chrome.pid,
+					port: chrome.port
+				});
 			});
 		})
 	}

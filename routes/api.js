@@ -9,6 +9,7 @@ router.get('/hostname', api.getHostname)
 router.get('/setHostname/:hostname', api.setHostname)
 router.get('/mac', api.getMacAddress)
 router.post('/openUrl', api.openUrl);
+router.get('/reloadDisplayPage/:id', api.reloadDisplayPage);
 router.get('/closeBrowserByPid/:id', api.closeBrowserByPid)
 router.get('/closeBrowser', api.closeBrowser)
 router.get('/screenshot', api.getScreenshot)

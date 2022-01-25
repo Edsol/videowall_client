@@ -36,6 +36,7 @@ model urlHistory {
   display       display  @relation(fields: [displayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   displayId     Int
   pid           Int
+  port          Int?
   closed        Boolean  @default(false)
   userDataDir   String?
   browserParams String?

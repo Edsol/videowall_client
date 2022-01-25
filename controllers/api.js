@@ -10,7 +10,8 @@ const display = new displayModel();
 const configModel = require('../models/config');
 const config = new configModel();
 
-const tools = require('../helper/tools');
+const pageModel = require('../models/page');
+const page = new pageModel();
 
 global.config = configController.getConfig;
 
@@ -128,6 +129,21 @@ exports.openUrl = async (req, res) => {
     var pid = await display.openBrowser(displayId, url);
 
     res.json({ executed: true, pid: pid })
+}
+
+exports.reloadDisplayPage = async (req, res) => {
+    var displayId = parseInt(req.params.id);
+
+    var lastUrlOfDisplay = await display.urlHistory.getLast({
+        displayId: displayId
+    });
+
+    if (lastUrlOfDisplay.closed) {
+        return res.json(`Page '${lastUrlOfDisplay.url}' for display ${displayId} was closed`);
+    }
+
+    var pageObject = await page.connect(lastUrlOfDisplay.port);
+    pageObject.reload();
 }
 
 /**
