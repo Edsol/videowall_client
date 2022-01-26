@@ -54,6 +54,7 @@ global.CronJobManager = CronJobManager;
   console.log('exportDisplay', exportDisplay)
 
   var displayList = await display.getList();
+  console.log('Number of display', displayList.length)
   if (displayList.length === 0) {
     await display.storeInfo()
   }
