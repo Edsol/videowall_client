@@ -7,10 +7,16 @@ const configModel = require('../models/config');
 const config = new configModel();
 
 const urlHistoryModel = require('../models/urlHistory');
-const urlHistory = new urlHistoryModel();
+
+const pageModel = require('../models/page');
+const page = new pageModel();
+
+var cronManager = null;
 
 class Display extends Table {
 	tableName = 'display';
+
+	urlHistory = new urlHistoryModel();
 
 	async extractDisplayInfo() {
 		var monitorsList = await tools.exec('DISPLAY=:0 xrandr --current');
@@ -146,7 +152,7 @@ class Display extends Table {
 		return true;
 	}
 
-	async openBrowser(displayId, url) {
+	async openBrowser(displayId, url, refreshTime) {
 		var browserParams = await config.getByTitle('browserParams', true);
 		var displayObj = await this.get(displayId);
 
@@ -157,64 +163,126 @@ class Display extends Table {
 
 		var userDataDir = userInfo.homedir + "/.config/chromium/Default" + displayId;
 
-		var pid = await this.browserLauncher(url, browserParams, userDataDir)
+		// var chromeInstance = await this.browserLauncher(url, browserParams, userDataDir)
+		var chromeInstance = await this.chromeLauncher(url, browserParams, userDataDir);
+		console.log(`Started browser instance for Display ${displayId} with PID ` + chromeInstance.pid + ` on port ` + chromeInstance.port);
 
-		console.log(`Browser start for Display ${displayId} with PID`, pid);
-
-		await urlHistory.insert({
+		await this.urlHistory.insert({
 			url: url,
-			pid: pid,
+			pid: chromeInstance.pid,
+			port: chromeInstance.port,
+			refreshTime: parseInt(refreshTime) || null,
 			displayId: displayId,
 			closed: false,
 			userDataDir: userDataDir,
 			browserParams: JSON.stringify(browserParams)
 		});
 
-		return pid;
+		if (refreshTime !== null) {
+			await this.createScheduler(refreshTime, chromeInstance.pid, chromeInstance.port);
+		}
+
+		return chromeInstance.pid;
 	}
 
+	// async browserLauncher(url, browserParams, userDataDir, detach = true) {
+	// 	console.log('url launched with browserLauncher')
+	// 	const launcher = require('@httptoolkit/browser-launcher');
 
-	async browserLauncher(url, browserParams, userDataDir, detach = true) {
-		console.log('url launched with browserLauncher', browserParams)
-		const launcher = require('@httptoolkit/browser-launcher');
+	// 	var browserCommand = await config.getByTitle('chromiumCommand', true) || 'chromium';
 
-		var browserCommand = await config.getByTitle('chromiumCommand', true) || 'chromium';
+	// 	var browserOptions = {
+	// 		browser: browserCommand,
+	// 		detached: true,
+	// 		options: browserParams,
+	// 		profile: userDataDir
+	// 	};
 
-		var browserOptions = {
-			browser: browserCommand,
-			detached: true,
-			options: browserParams,
-			profile: userDataDir
-		};
+	// 	console.log('browserOptions', browserParams)
+
+	// 	return new Promise((resolve, reject) => {
+	// 		launcher(async function (err, launch) {
+	// 			launch(url, browserOptions, async function (err, instance) {
+	// 				if (err) {
+	// 					reject(err);
+	// 				}
+
+	// 				if (detach === true) {
+	// 					instance.process.unref();
+	// 					instance.process.stdin.unref();
+	// 					instance.process.stdout.unref();
+	// 					instance.process.stderr.unref();
+	// 				}
+
+	// 				instance.on('stop', function (code) {
+	// 					this.urlHistory.setClosedByPid(instance.pid, true);
+	// 					console.log(`Browser instance (PID ${instance.pid}) stopped`);
+	// 				});
+	// 				console.log('instance', instance)
+	// 				resolve({
+	// 					pid: instance.pid,
+	// 					port: instance.port
+	// 				});
+	// 			}
+	// 			);
+	// 		});
+	// 	})
+	// }
+
+	async chromeLauncher(url, browserParams, userDataDir) {
+		console.log('chromeLauncher')
+		const ChromeLauncher = require('chrome-launcher');
 
 		return new Promise((resolve, reject) => {
-			launcher(async function (err, launch) {
-				launch(url, browserOptions, async function (err, instance) {
-					if (err) {
-						reject(err);
+			ChromeLauncher.launch({
+				startingUrl: url,
+				chromeFlags: browserParams,
+				userDataDir: userDataDir
+			}).then(async chrome => {
+				console.log(`Chrome debugging port running on ${chrome.port}`);
+
+				chrome.process.on('close', () => {
+					this.urlHistory.setClosedByPid(chrome.pid, true);
+					console.log(`Browser instance (PID ${chrome.pid}) stopped`);
+
+					if (cronManager !== null) {
+						if (cronManager.exists(chrome.pid)) {
+							console.log('deleted cronjob for PID', chrome.pid)
+							cronManager.deleteJob(`${chrome.pid}`)
+						}
 					}
+				})
 
-					if (detach === true) {
-						instance.process.unref();
-						instance.process.stdin.unref();
-						instance.process.stdout.unref();
-						instance.process.stderr.unref();
-					}
-
-					instance.on('stop', function (code) {
-						urlHistory.setClosedByPid(instance.pid, true);
-						console.log(`Browser instance (PID ${instance.pid}) stopped`);
-					});
-
-					resolve(instance.pid);
-				}
-				);
+				resolve({
+					pid: chrome.pid,
+					port: chrome.port
+				});
 			});
 		})
 	}
 
+	async createScheduler(refreshTime, pid, port) {
+		refreshTime = parseInt(refreshTime);
+		const cronTime = require('cron-time-generator');
+		var crontime_format = cronTime.every(refreshTime).minutes();
+		console.log(`Start cronjob (${refreshTime} minutes) for PID ${pid}`)
+
+		cronManager = new global.CronJobManager(
+			`${pid}`,
+			crontime_format,
+			async () => {
+				console.log('cron scheduler after ' + refreshTime + " minutes")
+				var pageObject = await page.connect(port);
+				await pageObject.reload();
+			},
+			{
+				start: true,
+			}
+		)
+	}
+
 	async reload(urlHistory) {
-		return await this.openBrowser(urlHistory.displayId, urlHistory.url);
+		return await this.openBrowser(urlHistory.displayId, urlHistory.url, urlHistory.refreshTime);
 	}
 }
 
