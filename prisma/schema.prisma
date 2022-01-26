@@ -37,6 +37,7 @@ model urlHistory {
   displayId     Int
   pid           Int
   port          Int?
+  refreshTime   Int?
   closed        Boolean  @default(false)
   userDataDir   String?
   browserParams String?

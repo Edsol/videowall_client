@@ -46,6 +46,9 @@ const urlHistory = new urlHistoryModel();
 
 const fileConfig = configController.getConfig();
 
+var CronJobManager = require('cron-job-manager');
+global.CronJobManager = CronJobManager;
+
 (async () => {
   var displayList = await display.getList();
   if (displayList.length === 0) {

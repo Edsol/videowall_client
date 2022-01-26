@@ -107,6 +107,7 @@ exports.setHostname = async (req, res) => {
  */
 exports.openUrl = async (req, res) => {
     var url = req.body.url;
+    var refreshTime = req.body.refreshTime;
 
     if (url === '') {
         res.json({ executed: false, errors: 'No url' });
@@ -126,7 +127,7 @@ exports.openUrl = async (req, res) => {
         displayId = first.id;
     }
 
-    var pid = await display.openBrowser(displayId, url);
+    var pid = await display.openBrowser(displayId, url, refreshTime);
 
     res.json({ executed: true, pid: pid })
 }
@@ -138,12 +139,15 @@ exports.reloadDisplayPage = async (req, res) => {
         displayId: displayId
     });
 
+    // console.log('reloadDisplayPage', lastUrlOfDisplay)
+
     if (lastUrlOfDisplay.closed) {
         return res.json(`Page '${lastUrlOfDisplay.url}' for display ${displayId} was closed`);
     }
 
     var pageObject = await page.connect(lastUrlOfDisplay.port);
-    pageObject.reload();
+    await pageObject.reload();
+    res.json(true);
 }
 
 /**
