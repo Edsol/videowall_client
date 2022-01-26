@@ -17,6 +17,8 @@ library.add(faPhone, faTrashAlt, faTimesCircle, faRetweet);
 const emitter = mitt();
 const app = createApp(App)
 
+console.log('Base location', location.hostname)
+
 app.config.globalProperties.backendUrl = 'http://' + location.hostname + ':3000/frontend/';
 app.config.globalProperties.apiUrl = 'http://' + location.hostname + ':3000/api/';
 
