@@ -243,7 +243,7 @@ class Display extends Table {
 
 				chrome.process.on('close', () => {
 					this.urlHistory.setClosedByPid(chrome.pid, true);
-					console.log(`Browser instance (PID ${chrome.pid}) stopped`);
+					console.log(`Browser instance (PID ${chrome.pid}, URL '${url}') was stopped`);
 
 					if (cronManager !== null) {
 						if (cronManager.exists(chrome.pid)) {
@@ -271,7 +271,7 @@ class Display extends Table {
 			`${pid}`,
 			crontime_format,
 			async () => {
-				console.log('cron scheduler after ' + refreshTime + " minutes")
+				console.log(`Refresh page (every ${refreshTime} min) for PID ${pid}`)
 				var pageObject = await page.connect(port);
 				await pageObject.reload();
 			},

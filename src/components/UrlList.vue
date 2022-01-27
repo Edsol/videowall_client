@@ -9,6 +9,7 @@
         <th>date</th>
         <th>url</th>
         <th>port</th>
+        <th>refresh time</th>
         <th></th>
       </thead>
       <tbody>
@@ -16,6 +17,7 @@
           <td>{{formatDatetime(item.datetime)}}</td>
           <td>{{item.url}}</td>
           <td>{{item.display.port}}</td>
+          <td>{{item.refreshTime}}</td>
           <td>
             <font-awesome-icon icon="times-circle" v-if="item.close === false" class="text-danger"/>
             <font-awesome-icon icon="trash-alt" class="text-danger cursor-pointer" v-on:click="removeUrl(item.id)" title="delete url"/>
