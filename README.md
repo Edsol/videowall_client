@@ -18,6 +18,8 @@ Start with a DE-less installation (I started with a [debian netinst](https://www
 
 For a saving of resources I have used `openbox` and `lightdm`, a minimal [`conky`](https://github.com/brndnmtthws/conky) setup file will be loaded to show basic information of device (on first monitor).
 
+![conky](./res/conky.png)
+
 AMD drivers will be installed, if they are not needed for your setup you will have to remove the lines before performing the installation.
 
 ---
